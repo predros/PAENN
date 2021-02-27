@@ -1,0 +1,74 @@
+﻿<Window x:Class="PAENN.Views.WinNewMember"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PAENN.Views"
+        mc:Ignorable="d" Closing="Window_Closing"
+        Title="Adicionar barra" Height="270" Width="350" ResizeMode="NoResize"> 
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Adicionar Barra" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+
+                </Grid.ColumnDefinitions>
+
+                <Label Content="{Binding Path=Text_X1}" Margin="5 5 5 5" Grid.Row="0" Grid.Column="0" />
+                <Label Content="{Binding Path=Text_Y1}" Margin="5 5 5 5" Grid.Row="1" Grid.Column="0" />
+                <Label Content="{Binding Path=Text_Z1}" Margin="5 5 5 5" Grid.Row="2" Grid.Column="0" />
+                
+                <Label Content="{Binding Path=Text_X2}" Margin="5 5 5 5" Grid.Row="0" Grid.Column="2" />
+                <Label Content="{Binding Path=Text_Y2}" Margin="5 5 5 5" Grid.Row="1" Grid.Column="2" />
+                <Label Content="{Binding Path=Text_Z2}" Margin="5 5 5 5" Grid.Row="2" Grid.Column="2" />
+
+
+                <Label Margin="5 5 5 5" Grid.Row="3" Grid.Column="0">Material:</Label>
+                <Label Margin="5 5 5 5" Grid.Row="4" Grid.Column="0">Seção:</Label>
+                
+                <TextBox Name="TextBox_X1" Margin="5 5 5 5" Grid.Row="0" Grid.Column="1"
+                         Width="60" Text="{Binding Path=Entry_X1, Mode=TwoWay}"/>
+                <TextBox Name="TextBox_Y1" Margin="5 5 5 5" Grid.Row="1" Grid.Column="1"
+                         Width="60" Text="{Binding Path=Entry_Y1, Mode=TwoWay}"/>
+                <TextBox Name="TextBox_Z1" Margin="5 5 5 5" Grid.Row="2" Grid.Column="1"
+                         Width="60" Text="{Binding Path=Entry_Z1, Mode=TwoWay}"/>
+                
+                <TextBox Name="TextBox_X2" Margin="5 5 5 5" Grid.Row="0" Grid.Column="3"
+                         Width="60" Text="{Binding Path=Entry_X2, Mode=TwoWay}"/>
+                <TextBox Name="TextBox_Y2" Margin="5 5 5 5" Grid.Row="1" Grid.Column="3"
+                         Width="60" Text="{Binding Path=Entry_Y2, Mode=TwoWay}"/>
+                <TextBox Name="TextBox_Z2" Margin="5 5 5 5" Grid.Row="2" Grid.Column="3"
+                         Width="60" Text="{Binding Path=Entry_Z2, Mode=TwoWay}"/>
+
+
+                <ComboBox Name="ComboBox_Material" Margin="5 5 5 5" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4"
+                          ItemsSource="{Binding Path=List_Materials}"  SelectedIndex="0" Text="{Binding Path=Var_Material}"/>
+                <ComboBox Name="ComboBox_Section" Margin="5 5 5 5" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4"
+                          ItemsSource="{Binding Path=List_Sections}" SelectedIndex="0" Text="{Binding Path=Var_Section}" />
+            </Grid>
+        </GroupBox>
+
+        <Grid Grid.Row="1">
+            <Button Name="Button_Close" Width="110" Margin="2.5" HorizontalAlignment="Left" Click="Button_Close_Click">Fechar</Button>
+            <Button Name="Button_Clear" Width="110" Margin="2.5" HorizontalAlignment="Center">Limpar</Button>
+            <Button Name="Button_Apply"  Width="110" Margin="2.5" HorizontalAlignment="Right" Click="Button_Apply_Click">Aplicar</Button>
+        </Grid>
+    </Grid>
+</Window>

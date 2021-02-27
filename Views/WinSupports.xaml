@@ -1,0 +1,121 @@
+﻿<Window x:Class="PAENN.Views.WinSupports"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PAENN.Views"
+        mc:Ignorable="d" Closing="Window_Closing"
+        Title="Adicionar apoios" Height="455" Width="325" ResizeMode="NoResize">
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </Window.Resources>
+    
+    <StackPanel Orientation="Vertical">
+      <GroupBox Header="Restrições nodais" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Direção X:" Margin="5 0 10 0"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Direção Y:" Margin="5 0 10 0"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Direção Z:" Margin="5 0 10 0"/>
+
+                <CheckBox Content="Deslocamento" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="5 0" IsChecked="{Binding Path=RestrUx}" />
+                <CheckBox Content="Rotação" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5 0" IsChecked="{Binding Path=RestrRx}" />
+
+                <CheckBox Content="Deslocamento" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5 0" IsChecked="{Binding Path=RestrUy}" />
+                <CheckBox Content="Rotação" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5 0" IsChecked="{Binding Path=RestrRy}" />
+                <CheckBox Content="Deslocamento" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="5 0" IsChecked="{Binding Path=RestrUz}" />
+                <CheckBox Content="Rotação" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5 0" IsChecked="{Binding Path=RestrRz}" />
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Constantes de mola" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Direção X:" Margin="5 0 10 0" Grid.Column="0" Grid.Row="1"/>
+                <Label Content="Direção Y:" Margin="5 0 10 0" Grid.Column="0" Grid.Row="2"/>
+                <Label Content="Direção Z:" Margin="5 0 10 0" Grid.Column="0" Grid.Row="3"/>
+                
+                <Label Content="{Binding Path=Text_LinearSpring}" Grid.Row="0" Grid.Column="1" />
+                <Label Content="{Binding Path=Text_RotateSpring}" Grid.Row="0" Grid.Column="2" Margin="15 0 0 0"/>
+
+                <TextBox Text="{Binding Path=KUx}" Width="50" Grid.Row="1" Grid.Column="1"
+                         IsEnabled="{Binding Path=RestrUx, Converter={StaticResource InverseBooleanConverter}}"/>
+                <TextBox Text="{Binding Path=KRx}" Width="50" Grid.Row="1" Grid.Column="2" Margin="25 0 0 0"
+                         IsEnabled="{Binding Path=RestrRx, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                <TextBox Text="{Binding Path=KUy}" Width="50" Grid.Row="2" Grid.Column="1" 
+                         IsEnabled="{Binding Path=RestrUy, Converter={StaticResource InverseBooleanConverter}}"/>
+                <TextBox Text="{Binding Path=KRy}" Width="50" Grid.Row="2" Grid.Column="2" Margin="25 0 0 0"
+                         IsEnabled="{Binding Path=RestrRy, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                <TextBox Text="{Binding Path=KUz}" Width="50" Grid.Row="3" Grid.Column="1" 
+                         IsEnabled="{Binding Path=RestrUz, Converter={StaticResource InverseBooleanConverter}}"/>
+                <TextBox Text="{Binding Path=KRz}" Width="50" Grid.Row="3" Grid.Column="2" Margin="25 0 0 0"
+                         IsEnabled="{Binding Path=RestrRz, Converter={StaticResource InverseBooleanConverter}}"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Deslocamentos prescritos" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Direção X:" Margin="5 0 10 0" Grid.Column="0" Grid.Row="1"/>
+                <Label Content="Direção Y:" Margin="5 0 10 0" Grid.Column="0" Grid.Row="2"/>
+                <Label Content="Direção Z:" Margin="5 0 10 0" Grid.Column="0" Grid.Row="3"/>
+
+                <Label Content="{Binding Path=Text_PrescrDispl}" Grid.Row="0" Grid.Column="1" />
+                <Label Content="{Binding Path=Text_PrescrRot}" Grid.Row="0" Grid.Column="2" />
+
+                <TextBox Text="{Binding Path=PUx}" Width="50" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding Path=RestrUx}"/>
+                <TextBox Text="{Binding Path=PRx}" Width="50" Grid.Row="1" Grid.Column="2" IsEnabled="{Binding Path=RestrRx}"/>
+
+                <TextBox Text="{Binding Path=PUy}" Width="50" Grid.Row="2" Grid.Column="1" IsEnabled="{Binding Path=RestrUy}"/>
+                <TextBox Text="{Binding Path=PRy}" Width="50" Grid.Row="2" Grid.Column="2" IsEnabled="{Binding Path=RestrRy}"/>
+
+                <TextBox Text="{Binding Path=PUz}" Width="50" Grid.Row="3" Grid.Column="1" IsEnabled="{Binding Path=RestrUz}"/>
+                <TextBox Text="{Binding Path=PRz}" Width="50" Grid.Row="3" Grid.Column="2" IsEnabled="{Binding Path=RestrRz}"/>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <Button Name="Button_Close" Content="Fechar" Width="147" Margin="0 0 2.5 0" Click="Button_Close_Click"/>
+            <Button Content="Aplicar" Width="148" Margin=" 2.5 0 0 0" Click="Button_Click"/>
+        </StackPanel>
+
+    </StackPanel>
+</Window>

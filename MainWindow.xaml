@@ -1,0 +1,165 @@
+﻿<Window x:Class="PAENN.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helix="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+        xmlns:local="clr-namespace:PAENN"
+        mc:Ignorable="d" 
+        Title="PAENN 2 o inimigo agora é outro" Height="600" Width="800">
+    <Grid x:Name="Container">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="100" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Menu Grid.ColumnSpan="2">
+            <MenuItem Header="Arquivo">
+                <MenuItem Header="Novo..." InputGestureText="Ctrl+N"/>
+                <MenuItem Header="Abrir..." InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Salvar..." InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Salvar como..." InputGestureText="Ctrl+Shift+S"/>
+                <Separator/>
+                <MenuItem Header="Sair" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="Editar">
+                <MenuItem Header="Desfazer" InputGestureText="Ctrl+Z" Click="Button_Undo_Click"/>
+                <MenuItem Header="Refazer" InputGestureText="Ctrl+Y" Click="Button_Redo_Click"/>
+            </MenuItem>
+            <MenuItem Header="Estrutura">
+                <MenuItem Header="Adicionar ponto" Click="Button_NewNode_Click"/>
+                <MenuItem Header="Adicionar barra" Click="Button_NewMember_Click"/>
+                <Separator/>
+                <MenuItem Header="Gerenciar materiais" Click="Button_Materials_Click"/>
+                <MenuItem Header="Gerenciar seções" Click="Button_Sections_Click"/>
+                <Separator/>
+                <MenuItem Header="Adicionar apoios" Click="Button_Supports_Click"/>
+                <MenuItem Header="Adicionar rótulas" />
+            </MenuItem>
+
+            <MenuItem Header="Carregamentos">
+                <MenuItem Header="Gerenciar casos de carga" />
+                <MenuItem Header="Gerenciar combinações" />
+                <Separator/>
+                <MenuItem Header="Adicionar forças nodais" Click="Button_Nodal_Click"/>
+                <MenuItem Header="Adicionar carregamentos distribuídos" Click="Button_Load_Click"/>
+                <MenuItem Header="Adicionar carregamentos térmicos"/>
+            </MenuItem>
+            <MenuItem Header="Análise" />
+            <MenuItem Header="Ajuda">
+                <MenuItem Header="Sobre..."/>
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Button Margin="1 2.5" ToolTip="Novo...">
+                <Image Source="/Pictures/icon_new.png" />
+            </Button>
+            <Button Margin="1 2.5" ToolTip="Abrir...">
+                <Image Source="/Pictures/icon_open.png" />
+            </Button>
+            <Button Margin="1 2.5" ToolTip="Salvar...">
+                <Image Source="/Pictures/icon_save.png"/>
+            </Button>
+            <Button  Margin="1 2.5" Click="Button_Undo_Click" ToolTip="Desfazer">
+                <Image Source="/Pictures/icon_undo.png"/>
+            </Button>
+            <Button Margin="1 2.5" Click="Button_Redo_Click" ToolTip="Refazer">
+                <Image Source="/Pictures/icon_redo.png"/>
+            </Button>
+            <Button Margin="1 2.5" ToolTip="Configurações">
+                <Image Source="/Pictures/icon_settings.png"/>
+            </Button>
+            <Button Margin="1 2.5" ToolTip="Gerenciar casos de carga">
+                <Image Source="/Pictures/icon_loadcases.png"/>
+            </Button>
+            <Button Margin="1 2.5" ToolTip="Gerenciar combinações">
+                <Image Source="/Pictures/icon_combinations.png"/>
+            </Button>
+            <Button Margin="1 2.5" ToolTip="Rodar análise">
+                <Image Source="/Pictures/icon_run.png"/>
+            </Button>
+            <Label Content="Caso:" Margin="10 0 5 0" VerticalAlignment="Center"/>
+            <ComboBox Name="CB_Case" Width="120" Margin="0 7.5" SelectedIndex="0" VerticalContentAlignment="Center"/>
+            <Label Content="Câmera:" Margin="10 0 5 0" VerticalAlignment="Center"/>
+            <ComboBox Name="CB_Camera" Width="80" Margin="0 7.5" SelectedIndex="0" SelectionChanged="CB_Camera_SelectionChanged" VerticalContentAlignment="Center">
+                <ComboBoxItem Content="Visão 3D" />
+                <ComboBoxItem Content="Plano XZ" />
+                <ComboBoxItem Content="Plano XY" />
+                <ComboBoxItem Content="Plano YZ" />
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1" >
+            <Button x:Name="Button_NewNode" Content="Novo ponto" Click="Button_NewNode_Click"/>
+            <Button x:Name="Button_Materials" Content="Materiais" Click="Button_Materials_Click"/>
+            <Button x:Name="Button_Sections" Content="Seções" Click="Button_Sections_Click"/>
+            <Button x:Name="Button_NewMember" Content="Nova barra" Click="Button_NewMember_Click"/>
+            <Button x:Name="Button_Supports" Content="Apoios" Click="Button_Supports_Click"/>
+            <Button x:Name="Button_Hinges" Content="Rótulas" IsEnabled="False"/>
+            <Button x:Name="Button_Nodal" Content="Forças nodais" Click="Button_Nodal_Click"/>
+            <Button x:Name="Button_Load" Content="Carregamentos" Click="Button_Load_Click"/>
+            <Button x:Name="Button_Thermal" Content="Cargas térmicas" IsEnabled="False"/>
+        </StackPanel>
+
+        <helix:HelixViewport3D x:Name="viewport" Background="WhiteSmoke" Cursor="Cross" PanCursor="SizeAll" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0"
+                               IsZoomEnabled="True" IsMoveEnabled="True" IsPanEnabled="True" IsRotationEnabled="True" VerticalAlignment="Stretch" 
+                               ShowCoordinateSystem="True" ShowViewCube="True" ZoomAroundMouseDownPoint="True" Width="Auto" Height="Auto" MouseWheel="viewport_MouseWheel"
+                               RotateAroundMouseDownPoint="True" MouseLeftButtonDown="viewport_MouseLeftButtonDown" MouseMove="viewport_MouseMove" CalculateCursorPosition="True">
+
+            <helix:HelixViewport3D.Camera>
+                <PerspectiveCamera Position="120, 200, 140" LookDirection="-0.1, -0.9, -0.7" UpDirection="0, 0, 1" FieldOfView="60" NearPlaneDistance="0.001" FarPlaneDistance="10000"/>
+            </helix:HelixViewport3D.Camera>
+        </helix:HelixViewport3D>
+
+        <ScrollViewer x:Name="canvasscroll" Grid.Row="2" Grid.Column="0" Cursor="Cross" Background="White" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" CanContentScroll="False" Visibility="Hidden" MouseDown="canvas2d_MouseDown" MouseMove="canvas2d_MouseMove">
+            <Canvas Width="30000" Height="30000" Background="White" x:Name="canvas2d"  MouseWheel="canvas2d_MouseWheel" MouseLeftButtonUp="canvas2d_MouseLeftButtonUp">
+                <Canvas.RenderTransform>
+                    <MatrixTransform/>
+                </Canvas.RenderTransform> 
+            </Canvas>
+            
+        </ScrollViewer> 
+        
+        <StatusBar Name="statusbar" Grid.Row="3" Grid.ColumnSpan="2" DockPanel.Dock="Bottom" Height="Auto" >
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+                <TextBlock Text="teste" Margin="10 2" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="5">
+                <CheckBox Content="Snap" IsChecked="{Binding Path=SnapGrid}" Margin="5 2 10 2"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <CheckBox Content="Grade" IsChecked="{Binding Path=GridEnabled}" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="3">
+                <TextBlock Text="{Binding Path=CoordsText}" />
+            </StatusBarItem>
+            
+
+        </StatusBar>
+    </Grid>
+</Window>

@@ -1,0 +1,42 @@
+﻿<Window x:Class="PAENN.Views.WinNewNode"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PAENN.Views"
+        mc:Ignorable="d"
+        Title="Adicionar ponto" Height="210" Width="300" Closing="OnWindowClosing" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Adicionar ponto" Margin="5 5 5 5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="{Binding Path=Text_XCoord}" Margin="5 5 5 5"  Grid.Row="0" Grid.Column="0"/>
+                <Label Content="{Binding Path=Text_YCoord}" Margin="5 5 5 5" Grid.Row="1" Grid.Column="0"/>
+                <Label Content="{Binding Path=Text_ZCoord}" Margin="5 5 5 5" Grid.Row="2" Grid.Column="0"/>
+                <TextBox Name="TextBox_XCoord" Margin="5 5 5 5" Grid.Row="0" Grid.Column="1" Width="80" Height="20" Text="{Binding Path=Entry_XCoord, Mode=TwoWay}"/>
+                <TextBox Name="TextBox_YCoord" Margin="5 5 5 5" Grid.Row="1" Grid.Column="1" Width="80" Height="20" Text="{Binding Path=Entry_YCoord, Mode=TwoWay}"/>
+                <TextBox Name="TextBox_ZCoord" Margin="5 5 5 5" Grid.Row="2" Grid.Column="1" Width="80" Height="20" Text="{Binding Path=Entry_ZCoord, Mode=TwoWay}"/>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button Name="Button_Close" Margin="5 0 5 5" HorizontalAlignment="Left" Width="130" Click="Button_Close_Click">Fechar</Button>
+            <Button Name="Button_Apply" Margin="5 0 5 5" HorizontalAlignment="Right" Width="130" Click="Button_Apply_Click">Aplicar</Button>
+        </StackPanel>
+    </Grid>
+</Window>

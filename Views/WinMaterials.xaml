@@ -1,0 +1,83 @@
+﻿<Window x:Class="PAENN.Views.WinMaterials"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PAENN.Views"
+        mc:Ignorable="d" Closing="Window_Closing"
+        Title="Gerenciar materiais" Height="350" Width="735" ResizeMode="NoResize" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="5" Width="420">
+            <ListView Name="List_Materials" Margin="5" SelectionMode="Single" SelectionChanged="List_Materials_SelectionChanged">
+                <ListView.Resources>
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="Nome" DisplayMemberBinding="{Binding Path=Name}" Width="150"/>
+                            <GridViewColumn Header="{Binding Path=ListText_Elasticity}" DisplayMemberBinding="{Binding Path=Elasticity, StringFormat={}{0:#.00}}" Width="120"/>
+                            <GridViewColumn Header="{Binding Path=ListText_Transversal}" DisplayMemberBinding="{Binding Path=Transversal, StringFormat={}{0:#.00}}" Width="140"/>
+                            <GridViewColumn Header="{Binding Path=ListText_Thermal}" DisplayMemberBinding="{Binding Path=Thermal, StringFormat={}{0:E0}}" Width="120"/>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+            <Button x:Name="Button_Delete" Content="Apagar" Width="100" Margin="5 0 2.5 0" Click="Button_Delete_Click" Height="25"/>
+            <Button x:Name="Button_Rename" Width="100" Content="Renomear" Margin="2.5 0 2.5 0" Click="Button_Rename_Click" Height="25"/>
+            <Button x:Name="Button_ApplyAll" Width="100" Content="Aplicar em tudo" Margin="2.5 0 2.5 0" Click="Button_ApplyAll_Click" Height="25"/>
+            <Button x:Name="Button_Apply" Width="110" Content="Aplicar na seleção" Margin="2.5 0 2.5 0" Height="25"/>
+        </StackPanel>
+
+        <GroupBox Header="Propriedades do material" Grid.Row="0" Grid.Column="1" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Nome:" Margin="30 60 5 5" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" />
+                <Label Content="{Binding Path=Text_Elasticity}" Margin="30 5 5 5" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" />
+                <Label Content="{Binding Path=Text_Transversal}" Margin="30 5 5 5" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" />
+                <Label Content="{Binding Path=Text_Thermal}" Margin="30 5 5 60" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" />
+
+                <TextBox Name="TextBox_Name" Text="{Binding Path=Entry_Name, Mode=TwoWay}" Margin="5 60 0 5"
+                         Width="80" Grid.Column="1" Grid.Row="0" Height="20"/>
+                <TextBox Name="TextBox_Elasticity" Text="{Binding Path=Entry_Elasticity, Mode=TwoWay}" Margin="5 5 0 5"
+                         Width="80" Grid.Column="1" Grid.Row="1" Height="20"/>
+                <TextBox Name="TextBox_Transversal" Margin="5 5 0 5" Text="{Binding Path=Entry_Transversal, Mode=TwoWay}"
+                         Width="80" Grid.Column="1" Grid.Row="2" Height="20"/>
+                <TextBox Name="TextBox_Thermal" Margin="5 5 0 60" Text="{Binding Path=Entry_Thermal, Mode=TwoWay}"
+                         Width="80" Grid.Column="1" Grid.Row="3" Height="20"/>
+            </Grid>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+            <Button x:Name="Button_Clear" Content="Limpar" Margin="2.5 0 5 0" Width="135" HorizontalAlignment="Left" Click="Button_Clear_Click" Height="25"/>
+            <Button x:Name="Button_Add" Content="Adicionar/Editar" Margin="5 0 0 0" Width="135" HorizontalAlignment="Right" Click="Button_Add_Click" Height="25"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

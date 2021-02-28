@@ -114,7 +114,7 @@
 
         <StackPanel Orientation="Horizontal" Margin="5">
             <Button Name="Button_Close" Content="Fechar" Width="147" Margin="0 0 2.5 0" Click="Button_Close_Click"/>
-            <Button Content="Aplicar" Width="148" Margin=" 2.5 0 0 0" Click="Button_Click"/>
+            <Button Content="Aplicar" Width="148" Margin=" 2.5 0 0 0" Click="Button_Apply_Click"/>
         </StackPanel>
 
     </StackPanel>

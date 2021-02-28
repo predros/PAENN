@@ -7,13 +7,26 @@ using Helper;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using PAENN.ViewModels;
 using System.Windows.Shapes;
 
 namespace Draw
 {
+
+    /// <summary>
+    /// Static class comprised of several functions useful when drawing on the 3D Viewport.
+    /// </summary>
     public static class DrawHelper
     {
+
+        /// <summary>
+        /// Given two points, corrects the second one's position (along the same vector) so that
+        /// their apparent distance (as seen through the viewport's camera) is equal to that supplied.
+        /// </summary>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="P1">The first (fixed) point.</param>
+        /// <param name="P2">The second (moving) point.</param>
+        /// <param name="distance">The desired apparent distance.</param>
+        /// <returns>The adjusted point, along the same line as P1-P2.</returns>
         public static Point3D CorrectRelativeSize(HelixViewport3D viewport, Point3D P1, Point3D P2, double distance)
         {
             var T = Viewport3DHelper.GetTotalTransform(viewport.Viewport);
@@ -48,6 +61,13 @@ namespace Draw
             return P;
         }
 
+
+        /// <summary>
+        /// Checks whether a given point in a viewport is currently in view or not.
+        /// </summary>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="P">The point.</param>
+        /// <returns>True if the point is in view, false otherwise.</returns>
         public static bool IsInViewport(HelixViewport3D viewport, Point3D P)
         {
             var q = Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, P);
@@ -60,6 +80,14 @@ namespace Draw
             else return true;
         }
 
+        /// <summary>
+        /// Draws a 2D (unfilled) four-sided polygon in a 3D viewport.
+        /// </summary>
+        /// <param name="P1">The "upper-right" corner.</param>
+        /// <param name="P2">The "upper-left" corner.</param>
+        /// <param name="P3">The "lower-left" corner.</param>
+        /// <param name="P4">The "lower-right" corner.</param>
+        /// <param name="linesVisual">The LinesVisual3D used for drawing the polygon.</param>
         public static void DrawRectangle(Point3D P1, Point3D P2, Point3D P3, Point3D P4, ref LinesVisual3D linesVisual)
         {
             linesVisual.Points.Add(P1);
@@ -75,6 +103,11 @@ namespace Draw
             linesVisual.Points.Add(P1);
         }
 
+        /// <summary>
+        /// Draws a wireframe rectangular prism in a 3D viewport.
+        /// </summary>
+        /// <param name="rectangle">The bounding prism.</param>
+        /// <param name="linesVisual">The LinesVisual3D used for drawing.</param>
         public static void DrawWireframeBox(Rect3D rectangle, ref LinesVisual3D linesVisual)
         {
             var i = new Vector3D(1, 0, 0);
@@ -128,6 +161,19 @@ namespace Draw
             linesVisual.Points.Add(P5);
         }
 
+
+        /// <summary>
+        /// Draws an arc in 3D space.
+        /// </summary>
+        /// <param name="Center">Center point of the arc.</param>
+        /// <param name="StartDir">3D direction between the center and the starting point.</param>
+        /// <param name="EndDir">3D direction between the center and the ending point.</param>
+        /// <param name="Radius">Radius of the arc.</param>
+        /// <param name="linesVisual">LinesVisual3D used for drawing the arc.</param>
+        /// <param name="ArrowStart">Whether to draw an arrow at the start tip.</param>
+        /// <param name="ArrowEnd">Whether to draw an arrow at the end tip.</param>
+        /// <param name="ArrowSize">Ratio between the arrow length and the arc radius.</param>
+        /// <param name="steps">Number of line segments used to approximate the arc curvature.</param>
         public static void DrawArc(Point3D Center, Vector3D StartDir, Vector3D EndDir, double Radius, 
                                    LinesVisual3D linesVisual, bool ArrowStart=false, bool ArrowEnd = false, double ArrowSize = 0.2, double steps = 15)
         {
@@ -195,7 +241,18 @@ namespace Draw
             }
         }
 
-        public static void DrawArrow(Point3D Start, Point3D End, Vector3D Normal, LinesVisual3D lines, double ArrowLength=0.3, double Angle=45, bool DoubleArrow = false, double unitsize = 0)
+
+        /// <summary>
+        /// Draws a 2D arrow in 3D space.
+        /// </summary>
+        /// <param name="Start">Starting point of the arrow.</param>
+        /// <param name="End">Ending point of the arrow.</param>
+        /// <param name="Normal">Vector normal to the plane containing the arrow.</param>
+        /// <param name="linesVisual">LinesVisual3D element used for drawing the arrow.</param>
+        /// <param name="ArrowLength">Ratio between the arrow-tip length and the full length.</param>
+        /// <param name="Angle">Angle between the arrow's wing and body.</param>
+        /// <param name="DoubleArrow">Whether to draw tips both on start and end.</param>
+        public static void DrawArrow(Point3D Start, Point3D End, Vector3D Normal, LinesVisual3D linesVisual, double ArrowLength=0.3, double Angle=45, bool DoubleArrow = false)
         {
             var i = Start - End;
             var length = ArrowLength * i.Length;
@@ -207,47 +264,44 @@ namespace Draw
             var tip1 = End + length * (i + j);
             var tip2 = End + length * (i - j);
 
-            lines.Points.Add(Start);
-            lines.Points.Add(End);
-            lines.Points.Add(End);
-            lines.Points.Add(tip1);
-            lines.Points.Add(End);
-            lines.Points.Add(tip2);
+            linesVisual.Points.Add(Start);
+            linesVisual.Points.Add(End);
+            linesVisual.Points.Add(End);
+            linesVisual.Points.Add(tip1);
+            linesVisual.Points.Add(End);
+            linesVisual.Points.Add(tip2);
 
             if (DoubleArrow)
             {
                 tip1 = Start + length * (-i + Math.Tan(Angle * Math.PI/180) * j);
                 tip2 = Start + length * (-i - Math.Tan(Angle * Math.PI / 180) * j);
 
-                lines.Points.Add(Start);
-                lines.Points.Add(tip1);
-                lines.Points.Add(Start);
-                lines.Points.Add(tip2);
+                linesVisual.Points.Add(Start);
+                linesVisual.Points.Add(tip1);
+                linesVisual.Points.Add(Start);
+                linesVisual.Points.Add(tip2);
             }
 
         }
     }
 
+
+
+    /// <summary>
+    /// Controls the rendering of axes (both 3D and 2D), lighting (3D) and gridlines (2D).
+    /// </summary>
     public static class DrawAmbient
     {
-        public static LinesVisual3D X_Axis = new LinesVisual3D()
-        {
-            Color = Colors.Red,
-            Thickness = 1,
-        };
+        public static LinesVisual3D X_Axis = new LinesVisual3D{ Color = Colors.Red, Thickness = 1 };
+        public static LinesVisual3D Y_Axis = new LinesVisual3D { Color = Colors.Green, Thickness = 1 };
+        public static LinesVisual3D Z_Axis = new LinesVisual3D{ Color = Colors.Blue, Thickness = 1};
 
-        public static LinesVisual3D Y_Axis = new LinesVisual3D()
-        {
-            Color = Colors.Green,
-            Thickness = 1,
-        };
 
-        public static LinesVisual3D Z_Axis = new LinesVisual3D()
-        {
-            Color = Colors.Blue,
-            Thickness = 1,
-        };
-
+        /// <summary>
+        /// Draws the X-Y-Z axes in the 3D viewport.
+        /// </summary>
+        /// <param name="viewport">The viewport.</param>
+        /// <param name="unitsize">How long must a line be in order to be 1 unit length on screen.</param>
         public static void DrawAxes(HelixViewport3D viewport, double unitsize=2)
         {
             if (Double.IsNaN(unitsize) || Double.IsInfinity(unitsize) || unitsize == 0)
@@ -275,6 +329,10 @@ namespace Draw
                 viewport.Children.Add(Z_Axis);
         }
 
+        /// <summary>
+        /// Adds ambient lighting to the 3D viewport.
+        /// </summary>
+        /// <param name="viewport">The viewport.</param>
         public static void DrawAmbientLight(HelixViewport3D viewport)
         {
             foreach(ModelVisual3D child in viewport.Children)
@@ -284,10 +342,13 @@ namespace Draw
             }
             viewport.Children.Add(new ModelVisual3D() { Content = new AmbientLight(Colors.White) });
         }
-
-
     }
 
+
+
+    /// <summary>
+    /// Contains and controls the rendering of nodes both on 2D and 3D.
+    /// </summary>
     public class NodeContainer
     {
         // 3D rendering parameters
@@ -297,8 +358,9 @@ namespace Draw
         
         // 2D rendering parameters
         private Canvas canvas;
-        public List<Ellipse> Nodes2D = new List<Ellipse>();
+        public List<Ellipse> EllipsesList = new List<Ellipse>();
         private List<Point> NodesList = new List<Point>();
+
 
         
         /// <summary>
@@ -316,146 +378,125 @@ namespace Draw
         }
 
 
+
         /// <summary>
-        ///  Adds a new node to the viewport or canvas.
+        ///  Adds a new node to the viewport.
         /// </summary>
         /// <param name="point">The point to be added.</param>
-        /// <param name="type">Whether to add to the viewport (3D) or canvas (2D).</param>
-        /// <param name="originX">X-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        /// <param name="originY">Y-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        public void AddNode(Point3D point, string type, double originX=0, double originY=0)
+        public void AddNode(Point3D point)
         {
 
-            if (type == "viewport")
-            {
-                if (UnselectedNodes.Points.Contains(point) || SelectedNodes.Points.Contains(point))
-                    return;
-
-                UnselectedNodes.Points.Add(point);
+            if (UnselectedNodes.Points.Contains(point) || SelectedNodes.Points.Contains(point))
                 return;
-            }
 
+            UnselectedNodes.Points.Add(point);
+        }
 
-            var point2d = Functions.Point3DToCanvas(point, VarHolder.GridNormal);
-            var p = new Point(point2d.X + originX, -point2d.Y + originY);
-
-
-            if (NodesList.Contains(p))
+        /// <summary>
+        ///  Adds a new node to the canvas.
+        /// </summary>
+        /// <param name="point">The point to be added.</param>
+        public void AddNode(Point point)
+        {
+            if (NodesList.Contains(point))
                 return;
 
             var scale = ((MatrixTransform)canvas.RenderTransform).Matrix.M11;
 
             var n = new Ellipse { Height = 6 / scale, Width = 6 / scale, Fill = Brushes.Black };
-            Canvas.SetLeft(n, p.X - 3 / scale);
-            Canvas.SetTop(n, p.Y - 3 / scale);
+            Canvas.SetLeft(n, point.X - 3 / scale);
+            Canvas.SetTop(n, point.Y - 3 / scale);
 
-            Nodes2D.Add(n);
-            NodesList.Add(p);
+            EllipsesList.Add(n);
+            NodesList.Add(point);
             canvas.Children.Add(n);
-
         }
 
 
+
         /// <summary>
-        /// Changes a given node to be displayed as selected in the viewport or canvas.
+        /// Changes a given node to be displayed as selected in the viewport.
         /// </summary>
         /// <param name="point">The point to be selected.</param>
-        /// <param name="type">Whether to select it in the viewport (3D) .</param>
-        /// <param name="originX">X-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        /// <param name="originY">Y-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        public void Select(Point3D point, string type, double originX=0, double originY=0)
+        public void Select(Point3D point)
         {
-            if (type == "viewport")
-            {
-                if (!UnselectedNodes.Points.Contains(point))
-                    return;
 
-                UnselectedNodes.Points.Remove(point);
-                SelectedNodes.Points.Add(point);
-                return;
-            }
-
-            var point2d = Functions.Point3DToCanvas(point, VarHolder.GridNormal);
-            point2d = new Point(point2d.X + originX, -point2d.Y + originY);
-
-            if (!NodesList.Contains(point2d))
+            if (!UnselectedNodes.Points.Contains(point))
                 return;
 
-            for(int i=0; i<NodesList.Count; i++)
-            {
-                if(NodesList[i] == point2d)
-                {
-                    var N = (Ellipse)Nodes2D[i];
-                    N.Fill = Brushes.Red;
-                }
-            }
+            UnselectedNodes.Points.Remove(point);
+            SelectedNodes.Points.Add(point);
+        }
 
+        /// <summary>
+        /// Changes a given node to be displayed as selected in the canvas.
+        /// </summary>
+        /// <param name="point">The point to be selected.</param>
+        public void Select(Point point)
+        {
+            if (!NodesList.Contains(point))
+                return;
+
+            var i = NodesList.IndexOf(point);
+            EllipsesList[i].Fill = Brushes.Red;
         }
 
 
+
         /// <summary>
-        /// Changes a given node to be displayed as not-selected in the viewport or canvas.
+        /// Changes a given node to be displayed as not selected in the viewport.
         /// </summary>
         /// <param name="point">The point to be unselected.</param>
-        /// <param name="type">Whether to select it in the viewport (3D) or canvas (2D).</param>
-        /// <param name="originX">X-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        /// <param name="originY">Y-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        public void Unselect(Point3D point, string type, double originX = 0, double originY = 0)
+        public void Unselect(Point3D point)
         {
-            if (type == "viewport")
-            {
-                if (!SelectedNodes.Points.Contains(point))
-                    return;
 
-                UnselectedNodes.Points.Add(point);
-                SelectedNodes.Points.Remove(point);
-                return;
-            }
-
-            var point2d = Functions.Point3DToCanvas(point, VarHolder.GridNormal);
-            point2d = new Point(point2d.X + originX, -point2d.Y + originY);
-
-            if (!NodesList.Contains(point2d))
+            if (!SelectedNodes.Points.Contains(point))
                 return;
 
-            for (int i = 0; i < NodesList.Count; i++)
-            {
-                if (NodesList[i] == point2d)
-                {
-                    var N = (Ellipse)Nodes2D[i];
-                    N.Fill = Brushes.Black;
-                }
-            }
+            SelectedNodes.Points.Remove(point);
+            UnselectedNodes.Points.Add(point);
+        }
 
+        /// <summary>
+        /// Changes a given node to be displayed as not selected in the canvas.
+        /// </summary>
+        /// <param name="point">The point to be unselected.</param>
+        public void Unselect(Point point)
+        {
+            if (!NodesList.Contains(point))
+                return;
+
+            var i = NodesList.IndexOf(point);
+            EllipsesList[i].Fill = Brushes.Black;
         }
 
 
+
         /// <summary>
-        /// Check if a point is being clicked in the viewport or canvas.
+        /// Check if a point is being clicked in the viewport.
         /// </summary>
         /// <param name="e">The mouse-click event.</param>
         /// <param name="point3d">The point to be checked.</param>
-        /// <param name="type">Whether to check the viewport (3D) or canvas (2D).</param>
-        /// <param name="originX">X-coordinate of the origin, relative to the canvas' upper-left corner.</param>
-        /// <param name="originY">Y-coordinate of the origin, relative to the canvas' upper-left corner.</param>
         /// <returns></returns>
-        public bool CheckIfClicked(MouseButtonEventArgs e, Point3D point3d, string type, double originX=0, double originY=0)
+        public bool CheckIfClicked(MouseButtonEventArgs e, Point3D point3d)
         {
-            // Defaults to check the canvas
-            var point2d = Functions.Point3DToCanvas(point3d, VarHolder.GridNormal);
-            point2d = new Point(point2d.X + originX, -point2d.Y + originY);
-            var click = e.GetPosition(canvas);
-
-            // If it's the viewport, change the values accordingly
-            if (type == "viewport")
-            {
-                point2d = Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, point3d);
-                click = e.GetPosition(viewport);
-            }
-
-            // Returns the distance between the point and the cursor
+            var point2d = Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, point3d);
+            var click = e.GetPosition(viewport);
             return (click - point2d).Length < 6;
         }
+
+        /// <summary>
+        /// Check if a point is being clicked in the canvas.
+        /// </summary>
+        /// <param name="e">The mouse-click event.</param>
+        /// <param name="point">The point to be checked.</param>
+        /// <returns></returns>
+        public bool CheckIfClicked(MouseButtonEventArgs e, Point point)
+        {
+            var click = e.GetPosition(canvas);
+            return (click - point).Length < 6;
+        }
+
 
 
         /// <summary>
@@ -467,7 +508,7 @@ namespace Draw
             Console.WriteLine(scale);
             for (int i = 0; i < NodesList.Count; i++)
             {
-                var N = (Ellipse)Nodes2D[i];
+                var N = EllipsesList[i];
                 N.Width = 6 / scale;
                 N.Height = 6 / scale;
                 Canvas.SetLeft(N, NodesList[i].X - 3 / scale);
@@ -476,71 +517,116 @@ namespace Draw
         }
 
 
+
         /// <summary>
         /// Clears every node from the viewport or canvas.
         /// </summary>
         /// <param name="type">Whether to clear the viewport (3D) or canvas (2D).</param>
         public void Clear(string type)
         {
-            if (type == "canvas")
+            switch (type)
             {
-                NodesList.Clear();
-                Nodes2D.Clear();
-                return;
-            }
+                case "canvas":
+                    foreach (Ellipse ellipse in EllipsesList)
+                        canvas.Children.Remove(ellipse);
 
-            SelectedNodes.Points.Clear();
-            UnselectedNodes.Points.Clear();
+                    NodesList.Clear();
+                    EllipsesList.Clear();
+                    break;
+                case "viewport":
+                    SelectedNodes.Points.Clear();
+                    UnselectedNodes.Points.Clear();
+                    break;
+            }
         }
 
     }
 
+
+
+    /// <summary>
+    /// Contains and controls the rendering of members both in 2D and 3D.
+    /// </summary>
     public class MemberContainer
     {
-
+        // 3D rendering parameters
+        private HelixViewport3D viewport;
         public LinesVisual3D SelectedMembers = new LinesVisual3D() { Thickness = 3, Color = Colors.DarkMagenta };
-
         public LinesVisual3D UnselectedMembers = new LinesVisual3D() { Thickness = 2, Color = Colors.SteelBlue };
 
-        private HelixViewport3D viewport;
+        private Canvas canvas;
+        private List<Line> LinesList = new List<Line>();
+        private List<Point> StartList = new List<Point>();
+        private List<Point> EndList = new List<Point>();
 
-
-        public MemberContainer(HelixViewport3D viewport3D)
+        /// <summary>
+        /// Member container class constructor.
+        /// </summary>
+        /// <param name="viewport3D">The viewport.</param>
+        /// <param name="cnv">The canvas.</param>
+        public MemberContainer(HelixViewport3D viewport3D, Canvas cnv)
         {
             viewport = viewport3D;
+            canvas = cnv;
 
             viewport.Children.Add(SelectedMembers);
             viewport.Children.Add(UnselectedMembers);
         }
 
-        public void AddMember(Point3D P1, Point3D P2)
+
+
+        /// <summary>
+        /// Adds a member to the 3D viewport.
+        /// </summary>
+        /// <param name="P1">The member's starting point.</param>
+        /// <param name="P2">The member's ending point.</param>
+        public void AddMember(Point3D p1, Point3D p2)
         {
-            if (UnselectedMembers.Points.Contains(P1))
+            if (UnselectedMembers.Points.Contains(p1))
             {
-                var i = UnselectedMembers.Points.IndexOf(P1);
-                if (i != UnselectedMembers.Points.Count - 1)
-                {
-                    if (UnselectedMembers.Points[i + 1] == P2)
-                        return;
-                }
-
+                var i = UnselectedMembers.Points.IndexOf(p1);
+                if (i != UnselectedMembers.Points.Count - 1 && UnselectedMembers.Points[i + 1] == p2)
+                    return;
             }
 
-            if (SelectedMembers.Points.Contains(P1))
+            if (SelectedMembers.Points.Contains(p1))
             {
-                var i = SelectedMembers.Points.IndexOf(P1);
+                var i = SelectedMembers.Points.IndexOf(p1);
 
-                if (i != SelectedMembers.Points.Count - 1)
-                {
-                    if (SelectedMembers.Points[i + 1] == P2)
-                        return;
-                }
+                if (i != SelectedMembers.Points.Count - 1 && SelectedMembers.Points[i + 1] == p2)
+                    return;
             }
-
-            UnselectedMembers.Points.Add(P1);
-            UnselectedMembers.Points.Add(P2);
+            UnselectedMembers.Points.Add(p1);
+            UnselectedMembers.Points.Add(p2);
         }
 
+        /// <summary>
+        /// Adds a member to the 2D canvas.
+        /// </summary>
+        /// <param name="P1">The member's starting point.</param>
+        /// <param name="P2">The member's ending point.</param>
+        public void AddMember(Point p1, Point p2)
+        {
+            for(int i=0; i<StartList.Count; i++)
+            {
+                if (StartList[i] == p1 && EndList[i] == p2 || EndList[i] == p1 && StartList[i] == p2)
+                    return;
+            }
+            var l = new Line { X1 = p1.X, Y1 = p1.Y, X2 = p2.X, Y2 = p2.Y, StrokeThickness = 2.5, Stroke = Brushes.LightSteelBlue };
+            
+            canvas.Children.Add(l);
+            LinesList.Add(l);
+            StartList.Add(p1);
+            EndList.Add(p2);
+        }
+
+
+
+        /// <summary>
+        /// Changes a member to be displayed as selected in the 3D viewport.
+        /// </summary>
+        /// <param name="p1">The member's starting point.</param>
+        /// <param name="p2">The member's ending point.</param>
         public void Select(Point3D p1, Point3D p2)
         {
             var index = FindPointPair(p1, p2, UnselectedMembers.Points);
@@ -555,6 +641,30 @@ namespace Draw
             SelectedMembers.Points.Add(p2);
         }
 
+        /// <summary>
+        /// Changes a member to be displayed as selected in the 2D canvas.
+        /// </summary>
+        /// <param name="p1">The member's starting point.</param>
+        /// <param name="p2">The member's ending point.</param>
+        public void Select(Point p1, Point p2)
+        {
+            foreach (Line line in LinesList)
+            {
+                var q1 = new Point(line.X1, line.Y1);
+                var q2 = new Point(line.X2, line.Y2);
+
+                if (p1 == q1 && p2 == q2)
+                    line.Stroke = Brushes.DarkMagenta;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Changes a member to be displayed as not selected in the 3D viewport.
+        /// </summary>
+        /// <param name="p1">The member's starting point.</param>
+        /// <param name="p2">The member's ending point.</param>
         public void Unselect(Point3D p1, Point3D p2)
         {
             var index = FindPointPair(p1, p2, SelectedMembers.Points);
@@ -569,6 +679,32 @@ namespace Draw
             UnselectedMembers.Points.Add(p2);
         }
 
+        /// <summary>
+        /// Changes a member to be displayed as not selected in the 2D canvas.
+        /// </summary>
+        /// <param name="p1">The member's starting point.</param>
+        /// <param name="p2">The member's ending point.</param>
+        public void Unselect(Point p1, Point p2)
+        {
+            foreach (Line line in LinesList)
+            {
+                var q1 = new Point(line.X1, line.Y1);
+                var q2 = new Point(line.X2, line.Y2);
+
+                if (p1 == q1 && p2 == q2)
+                    line.Stroke = Brushes.LightSteelBlue;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Checks if a given pair of points form are contained within a list in successive order.
+        /// </summary>
+        /// <param name="p1">The first point.</param>
+        /// <param name="p2">The second point.</param>
+        /// <param name="list">The list to be checked.</param>
+        /// <returns>If the pair of points is found, return the first one's index. Otherwise, returns null.</returns>
         public int? FindPointPair(Point3D p1, Point3D p2, Point3DCollection list)
         {
             for(int i = list.Count - 1; i > 0; i--)
@@ -582,6 +718,15 @@ namespace Draw
             return null;
         }
 
+
+
+        /// <summary>
+        /// Checks if a given member in the 3D Viewport is being clicked.
+        /// </summary>
+        /// <param name="e">The click event.</param>
+        /// <param name="p1">The member's starting point.</param>
+        /// <param name="p2">The member's ending point.</param>
+        /// <returns>Whether or not the member is being clicked.</returns>
         public bool CheckIfClicked(MouseButtonEventArgs e, Point3D p1, Point3D p2)
         {
             var p1_2d = Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, p1);
@@ -594,43 +739,115 @@ namespace Draw
             var ymin = Math.Min(p1_2d.Y, p2_2d.Y);
             var d = Functions.DistancePointLine(p1_2d, p2_2d, click);
 
-            if (d > 4)
+            if (d > 4 || click.X < xmin - 2 || click.Y < ymin - 2 || click.X > xmax + 2 || click.Y > xmax + 2)
                 return false;
-
-            if (click.X < xmin - 2 || click.Y < ymin - 2)
-                return false;
-
-            if (click.X > xmax + 2 || click.Y > xmax + 2)
-                return false;
-
-            return true;
+            else
+                return true;
         }
 
-        public void Clear()
+        /// <summary>
+        /// Checks if a given member in the 2D Canvas is being clicked.
+        /// </summary>
+        /// <param name="e">The click event.</param>
+        /// <param name="p1">The member's starting point.</param>
+        /// <param name="p2">The member's ending point.</param>
+        /// <returns>Whether or not the member is being clicked.</returns>
+        public bool CheckIfClicked(MouseButtonEventArgs e, Point p1, Point p2)
         {
-            for (int i = SelectedMembers.Points.Count; i > 0; i--)
-                SelectedMembers.Points.RemoveAt(i - 1);
+            var click = e.GetPosition(canvas);
 
-            for (int i = UnselectedMembers.Points.Count; i > 0; i--)
-                UnselectedMembers.Points.RemoveAt(i - 1);
+            var xmax = Math.Max(p1.X, p2.X);
+            var xmin = Math.Min(p1.X, p2.X);
+            var ymax = Math.Max(p1.Y, p2.Y);
+            var ymin = Math.Min(p1.Y, p2.Y);
+
+            var d = Functions.DistancePointLine(p1, p2, click);
+           
+            if (d > 4 || click.X < xmin - 2 || click.Y < ymin - 2 || click.X > xmax + 2 || click.Y > xmax + 2)
+                return false;
+            else
+                return true;
+        }
+
+
+
+        /// <summary>
+        /// Rescales every member so that the line thickness is kept constant when zooming in/out.
+        /// </summary>
+        public void Rescale()
+        {
+            var scale = ((MatrixTransform)canvas.RenderTransform).Matrix.M11;
+
+            foreach (Line line in LinesList)
+                line.StrokeThickness = 2.5 / scale;
+        }
+
+
+
+        /// <summary>
+        /// Clears the members being rendered in the 2D Canvas or 3D Viewport.
+        /// </summary>
+        /// <param name="type">Whether to clear the Canvas or the Viewport.</param>
+        public void Clear(string type)
+        {
+            switch (type)
+            {
+                case "viewport":
+                    SelectedMembers.Points.Clear();
+                    UnselectedMembers.Points.Clear();
+                    break;
+                case "canvas":
+                    foreach (Line line in LinesList)
+                        canvas.Children.Remove(line);
+                    LinesList.Clear();
+                    StartList.Clear();
+                    EndList.Clear();
+                    break;
+            }
         }
     }
 
+
+
+    /// <summary>
+    /// Contains and controls the rendering of support elements both in 2D and 3D.
+    /// </summary>
     public class SupportContainer
     {
+        // 3D rendering parameters
+        private HelixViewport3D viewport;
         private LinesVisual3D linesupports = new LinesVisual3D { Color = Colors.Black, Thickness = 1.5 };
         private Model3DGroup supports = new Model3DGroup();
         private ModelVisual3D supportsvisual = new ModelVisual3D();
-        private HelixViewport3D viewport;
 
-        public SupportContainer(HelixViewport3D viewport3D)
+        // 2D rendering parameters
+        private Canvas canvas;
+
+
+
+        /// <summary>
+        /// Support Container class constructor.
+        /// </summary>
+        /// <param name="viewport3D">The viewport.</param>
+        /// <param name="cnv">The canvas.</param>
+        public SupportContainer(HelixViewport3D viewport3D, Canvas cnv)
         {
             viewport = viewport3D;
             supportsvisual.Content = supports;
             viewport.Children.Add(supportsvisual);
             viewport.Children.Add(linesupports);
+
+            canvas = cnv;
         }
 
+
+
+        /// <summary>
+        /// Adds a support element to a given point, based upon the applied restrictions.
+        /// </summary>
+        /// <param name="P">The point.</param>
+        /// <param name="r">Bool dictionary containing the states of every degree of freedom.</param>
+        /// <param name="unitsize">Real length needed, given the current camera position, to result in an apparent (screen units) unitary length.</param>
         public void AddSupport(Point3D P, Dictionary<string, bool> r, double unitsize=0)
         {
             var dist = 10 * unitsize;
@@ -653,22 +870,22 @@ namespace Draw
                 AddFixed(P, dist);
 
             else if (r["Ux"] && r["Uy"])
-                AddCart(P, 0, dist);
+                AddCart(P, "Z", dist);
 
             else if (r["Ux"] && r["Uz"])
-                AddCart(P, 1, dist);
+                AddCart(P, "Y", dist);
 
             else if (r["Uy"] && r["Uz"])
-                AddCart(P, 2, dist);
+                AddCart(P, "X", dist);
 
             else if (r["Ux"])
-                AddSphere(P, 0, dist);
+                AddSphere(P, "X", dist);
 
             else if (r["Uy"])
-                AddSphere(P, 1, dist);
+                AddSphere(P, "Y", dist);
 
             else if (r["Uz"])
-                AddSphere(P, 2, dist);
+                AddSphere(P, "Z", dist);
 
             if (r["Rx"] && r["Ry"] && r["Rz"])
             {
@@ -677,13 +894,18 @@ namespace Draw
             }
 
             if (r["Rx"])
-                AddRotationFixer(P, 0, dist);
+                AddRotationFixer(P, "X", dist);
             if (r["Ry"])
-                AddRotationFixer(P, 1, dist);
+                AddRotationFixer(P, "Y", dist);
             if (r["Rz"])
-                AddRotationFixer(P, 2, dist);
+                AddRotationFixer(P, "Z", dist);
         }
 
+
+
+        /// <summary>
+        /// Clears the support elements contained in the viewport.
+        /// </summary>
         public void Clear()
         {
             viewport.Children.Remove(supportsvisual);
@@ -699,38 +921,61 @@ namespace Draw
             viewport.Children.Add(linesupports);
         }
 
-        private void AddSphere(Point3D P, int type, double dist)
+
+
+        /// <summary>
+        /// Draws a sphere (single-directional displacement support) at the given point.
+        /// </summary>
+        /// <param name="P">The point.</param>
+        /// <param name="direction">The restricted direction.</param>
+        /// <param name="diameter">The sphere's diameter.</param>
+        private void AddSphere(Point3D P, string direction, double diameter)
         {
             var builder = new MeshBuilder();
             var color = Colors.Firebrick;
 
-            switch (type)
+            switch (direction)
             {
-                case 0:
-                    builder.AddSphere(new Point3D(P.X - dist / 2, P.Y, P.Z), dist / 2);
+                case "X":
+                    builder.AddSphere(new Point3D(P.X - diameter / 2, P.Y, P.Z), diameter / 2);
                     break;
-                case 1:
-                    builder.AddSphere(new Point3D(P.X, P.Y - dist / 2, P.Z), dist / 2);
+                case "Y":
+                    builder.AddSphere(new Point3D(P.X, P.Y - diameter / 2, P.Z), diameter / 2);
                     break;
-                case 2:
-                    builder.AddSphere(new Point3D(P.X, P.Y, P.Z - dist / 2), dist / 2);
+                case "Z":
+                    builder.AddSphere(new Point3D(P.X, P.Y, P.Z - diameter / 2), diameter / 2);
                     break;
             }
             var geometry = builder.ToMesh();
             supports.Children.Add(new GeometryModel3D { Geometry = geometry, Material = MaterialHelper.CreateMaterial(color) });
         }
 
-        private void AddFixed(Point3D P, double dist)
+
+
+        /// <summary>
+        /// Adds a pyramid (three-directional displacement support) at the given point.
+        /// </summary>
+        /// <param name="P">The point.</param>
+        /// <param name="length">The pyramid's side length.</param>
+        private void AddFixed(Point3D P, double length)
         {
             var builder = new MeshBuilder();
             var color = Colors.DarkGreen;
 
-            builder.AddPyramid(new Point3D(P.X, P.Y, P.Z - dist / 4), dist, dist / 2, true);
+            builder.AddPyramid(new Point3D(P.X, P.Y, P.Z - length / 4), length, length / 2, true);
             var geometry = builder.ToMesh();
             supports.Children.Add(new GeometryModel3D { Geometry = geometry, Material = MaterialHelper.CreateMaterial(color) });
         }
 
-        private void AddRotationFixer(Point3D P, int type, double dist)
+
+
+        /// <summary>
+        /// Draws a two-dimensional rectangle (single-directional rotation support) at the given point.
+        /// </summary>
+        /// <param name="P">The point</param>
+        /// <param name="type">The restricted direction.</param>
+        /// <param name="length">The rectangle's side length.</param>
+        private void AddRotationFixer(Point3D P, string type, double length)
         {
             var P1 = new Point3D();
             var P2 = new Point3D();
@@ -739,67 +984,82 @@ namespace Draw
 
             switch (type)
             {
-                case 0:
-                    P1 = new Point3D(P.X, P.Y - dist / 2, P.Z - dist / 2);
-                    P2 = new Point3D(P.X, P.Y + dist / 2, P.Z - dist / 2);
-                    P3 = new Point3D(P.X, P.Y + dist / 2, P.Z + dist / 2);
-                    P4 = new Point3D(P.X, P.Y - dist / 2, P.Z + dist / 2);
+                case "X":
+                    P1 = new Point3D(P.X, P.Y - length / 2, P.Z - length / 2);
+                    P2 = new Point3D(P.X, P.Y + length / 2, P.Z - length / 2);
+                    P3 = new Point3D(P.X, P.Y + length / 2, P.Z + length / 2);
+                    P4 = new Point3D(P.X, P.Y - length / 2, P.Z + length / 2);
                     break;
-                case 1:
-                    P1 = new Point3D(P.X - dist / 2, P.Y, P.Z - dist / 2);
-                    P2 = new Point3D(P.X + dist / 2, P.Y, P.Z - dist / 2);
-                    P3 = new Point3D(P.X + dist / 2, P.Y, P.Z + dist / 2);
-                    P4 = new Point3D(P.X - dist / 2, P.Y, P.Z + dist / 2);
+                case "Y":
+                    P1 = new Point3D(P.X - length / 2, P.Y, P.Z - length / 2);
+                    P2 = new Point3D(P.X + length / 2, P.Y, P.Z - length / 2);
+                    P3 = new Point3D(P.X + length / 2, P.Y, P.Z + length / 2);
+                    P4 = new Point3D(P.X - length / 2, P.Y, P.Z + length / 2);
                     break;
-                case 2:
-                    P1 = new Point3D(P.X - dist / 2, P.Y - dist / 2, P.Z);
-                    P2 = new Point3D(P.X + dist / 2, P.Y - dist / 2, P.Z);
-                    P3 = new Point3D(P.X + dist / 2, P.Y + dist / 2, P.Z);
-                    P4 = new Point3D(P.X - dist / 2, P.Y + dist / 2, P.Z);
+                case "Z":
+                    P1 = new Point3D(P.X - length / 2, P.Y - length / 2, P.Z);
+                    P2 = new Point3D(P.X + length / 2, P.Y - length / 2, P.Z);
+                    P3 = new Point3D(P.X + length / 2, P.Y + length / 2, P.Z);
+                    P4 = new Point3D(P.X - length / 2, P.Y + length / 2, P.Z);
                     break;
             }
             DrawHelper.DrawRectangle(P1, P2, P3, P4, ref linesupports);
         }
 
-        private void AddFullRotFix(Point3D P, double dist)
+
+
+        /// <summary>
+        /// Draws a 3D wireframe box (three-directional rotation support)
+        /// </summary>
+        /// <param name="P">The point.</param>
+        /// <param name="length">The box's side length.</param>
+        private void AddFullRotFix(Point3D P, double length)
         {
-            var rect = new Rect3D(new Point3D(P.X - dist / 2, P.Y - dist / 2, P.Z - dist / 2), new Size3D(dist, dist, dist));
+            var rect = new Rect3D(new Point3D(P.X - length / 2, P.Y - length / 2, P.Z - length / 2), new Size3D(length, length, length));
             DrawHelper.DrawWireframeBox(rect, ref linesupports);
         }
 
-        private void AddCart(Point3D P, int type, double dist)
+
+
+        /// <summary>
+        /// Draws a little cart (two-direction displacement support) at the given point.
+        /// </summary>
+        /// <param name="P">The point.</param>
+        /// <param name="type">The direction normal to the restricted plane (a.k.a. the unrestricted direction)</param>
+        /// <param name="length">The cart's length.</param>
+        private void AddCart(Point3D P, string type, double length)
         {
             var builder = new MeshBuilder();
             var builder2 = new MeshBuilder();
 
             switch (type)
             {
-                case 0:     // Ux, Uy
-                    builder2.AddCylinder(new Point3D(P.X - 0.25 * dist, P.Y - dist / 4, P.Z),
-                                         new Point3D(P.X - 0.25 * dist, P.Y - dist / 3, P.Z), dist / 8);
+                case "Z":     // Ux, Uy
+                    builder2.AddCylinder(new Point3D(P.X - 0.25 * length, P.Y - length / 4, P.Z),
+                                         new Point3D(P.X - 0.25 * length, P.Y - length / 3, P.Z), length / 8);
 
-                    builder2.AddCylinder(new Point3D(P.X - 0.25 * dist, P.Y + dist / 4, P.Z),
-                                         new Point3D(P.X - 0.25 * dist, P.Y + dist / 3, P.Z), dist / 8);
-                    builder.AddBox(new Rect3D(new Point3D(P.X - dist / 8, P.Y - dist / 3, P.Z - dist / 8),
-                                   new Size3D(dist / 8, 2 * dist / 3, dist / 4)));
+                    builder2.AddCylinder(new Point3D(P.X - 0.25 * length, P.Y + length / 4, P.Z),
+                                         new Point3D(P.X - 0.25 * length, P.Y + length / 3, P.Z), length / 8);
+                    builder.AddBox(new Rect3D(new Point3D(P.X - length / 8, P.Y - length / 3, P.Z - length / 8),
+                                   new Size3D(length / 8, 2 * length / 3, length / 4)));
                     break;
                 
-                case 1:     // Ux, Uz
-                    builder2.AddCylinder(new Point3D(P.X - 0.25 * dist, P.Y, P.Z - dist / 4),
-                     new Point3D(P.X - 0.25 * dist, P.Y, P.Z - dist / 3), dist / 8);
-                    builder2.AddCylinder(new Point3D(P.X - 0.25 * dist, P.Y, P.Z + dist / 4),
-                                         new Point3D(P.X - 0.25 * dist, P.Y, P.Z + dist / 3), dist / 8);
-                    builder.AddBox(new Rect3D(new Point3D(P.X - dist / 8, P.Y - dist / 8, P.Z - dist / 3),
-                                   new Size3D(dist / 8, dist / 4, 2 * dist / 3)));
+                case "Y":     // Ux, Uz
+                    builder2.AddCylinder(new Point3D(P.X - 0.25 * length, P.Y, P.Z - length / 4),
+                     new Point3D(P.X - 0.25 * length, P.Y, P.Z - length / 3), length / 8);
+                    builder2.AddCylinder(new Point3D(P.X - 0.25 * length, P.Y, P.Z + length / 4),
+                                         new Point3D(P.X - 0.25 * length, P.Y, P.Z + length / 3), length / 8);
+                    builder.AddBox(new Rect3D(new Point3D(P.X - length / 8, P.Y - length / 8, P.Z - length / 3),
+                                   new Size3D(length / 8, length / 4, 2 * length / 3)));
                     break;
 
-                case 2:     // Uy, Uz
-                    builder2.AddCylinder(new Point3D(P.X, P.Y - 0.25 * dist, P.Z - dist / 4),
-                     new Point3D(P.X, P.Y - 0.25 * dist, P.Z - dist / 3), dist / 8);
-                    builder2.AddCylinder(new Point3D(P.X, P.Y - 0.25 * dist, P.Z + dist / 4),
-                                         new Point3D(P.X, P.Y - 0.25 * dist, P.Z + dist / 3), dist / 8);
-                    builder.AddBox(new Rect3D(new Point3D(P.X - dist / 8, P.Y - dist / 8, P.Z - dist / 3),
-                                   new Size3D(dist / 4, dist / 8, 2 * dist / 3)));
+                case "X":     // Uy, Uz
+                    builder2.AddCylinder(new Point3D(P.X, P.Y - 0.25 * length, P.Z - length / 4),
+                     new Point3D(P.X, P.Y - 0.25 * length, P.Z - length / 3), length / 8);
+                    builder2.AddCylinder(new Point3D(P.X, P.Y - 0.25 * length, P.Z + length / 4),
+                                         new Point3D(P.X, P.Y - 0.25 * length, P.Z + length / 3), length / 8);
+                    builder.AddBox(new Rect3D(new Point3D(P.X - length / 8, P.Y - length / 8, P.Z - length / 3),
+                                   new Size3D(length / 4, length / 8, 2 * length / 3)));
                     break;
             }
             var geometry = builder.ToMesh();
@@ -808,33 +1068,63 @@ namespace Draw
             supports.Children.Add(new GeometryModel3D { Geometry = geometry2, Material = MaterialHelper.CreateMaterial(Colors.Black) });
         }
 
-        private void AddEncastre(Point3D P, double dist)
+
+
+        /// <summary>
+        /// Adds a short cylinder/encastre (three-directional displacement and rotation support) at the given point.
+        /// </summary>
+        /// <param name="P">The point.</param>
+        /// <param name="diameter">The cylinder's diameter.</param>
+        private void AddEncastre(Point3D P, double diameter)
         {
             var builder = new MeshBuilder();
-            builder.AddCylinder(P, new Point3D(P.X, P.Y, P.Z - dist / 3), dist);
+            builder.AddCylinder(P, new Point3D(P.X, P.Y, P.Z - diameter / 3), diameter);
             var geometry = builder.ToMesh();
             supports.Children.Add(new GeometryModel3D { Geometry = geometry, Material = MaterialHelper.CreateMaterial(Colors.SaddleBrown) });
         }
 
     }
 
+
+
+    /// <summary>
+    /// Contains and controls the rendering of nodal forces symbols both in 2D and 3D.
+    /// </summary>
     public class NodalForcesContainer
     {
+        // 3D rendering parameters
+        private HelixViewport3D viewport;
         private LinesVisual3D lines = new LinesVisual3D { Color = Colors.DarkBlue, Thickness = 1.5 };
         private Model3DGroup forces = new Model3DGroup();
         private ModelVisual3D visual_forces = new ModelVisual3D();
         private BillboardTextGroupVisual3D textgroup = new BillboardTextGroupVisual3D();
-        private HelixViewport3D viewport;
 
-        public NodalForcesContainer(HelixViewport3D viewport3D)
+        // 2D rendering parameters
+        private Canvas canvas;
+
+
+
+        /// <summary>
+        /// Nodal Forces Container class constructor.
+        /// </summary>
+        /// <param name="viewport3D">The viewport.</param>
+        /// <param name="cnv">The canvas.</param>
+        public NodalForcesContainer(HelixViewport3D viewport3D, Canvas cnv)
         {
             viewport = viewport3D;
             visual_forces.Content = forces;
             viewport.Children.Add(visual_forces);
             viewport.Children.Add(lines);
             viewport.Children.Add(textgroup);
+
+            canvas = cnv;
         }
 
+
+
+        /// <summary>
+        /// Clears every nodal force being rendered in the viewport.
+        /// </summary>
         public void Clear()
         {
             if (viewport.Children.Contains(lines))
@@ -854,41 +1144,70 @@ namespace Draw
 
         }
 
+
+
+        /// <summary>
+        /// Adds to the given point the forces in the given dictionary/loadcase.
+        /// </summary>
+        /// <param name="point">The point.</param>
+        /// <param name="forces">The dictionary containing the nodal forces.</param>
+        /// <param name="loadcase">The loadcase number to be considered.</param>
+        /// <param name="unitsize">The real length needed around the point in order to create an apparent unitary length in the viewport.</param>
         public void AddForce(Point3D point, Dictionary<string, List<double>> forces, int loadcase, double unitsize)
         {
             var funit = PAENN.Models.UnitsHolder.Force;
+            var Fx = forces["Fx"][loadcase];
+            var Fy = forces["Fy"][loadcase];
+            var Fz = forces["Fz"][loadcase];
+            var Mx = forces["Mx"][loadcase];
+            var My = forces["My"][loadcase];
+            var Mz = forces["Mz"][loadcase];
 
-            if (forces["Fx"][loadcase] > 0)
-                DrawForce(point, "Fx", GetArrowSize(forces["Fx"][loadcase], 0), forces["Fx"][loadcase].ToString() + " " + funit, false, unitsize);
-            else if (forces["Fx"][loadcase] < 0)
-                DrawForce(point, "Fx", GetArrowSize(forces["Fx"][loadcase], 0), Math.Abs(forces["Fx"][loadcase]).ToString() + " " + funit, true, unitsize);
 
-            if (forces["Fy"][loadcase] > 0)
-                DrawForce(point, "Fy", GetArrowSize(forces["Fy"][loadcase], 0), forces["Fy"][loadcase].ToString() + " " + funit, false, unitsize);
-            else if (forces["Fy"][loadcase] < 0)
-                DrawForce(point, "Fy", GetArrowSize(forces["Fy"][loadcase], 0), Math.Abs(forces["Fy"][loadcase]).ToString() + " " + funit, true, unitsize);
+            if (Fx > 0)
+                DrawForce(point, "Fx", GetArrowSize(Fx, 0), Fx.ToString() + " " + funit, false, unitsize);
+            else if (Fx < 0)
+                DrawForce(point, "Fx", GetArrowSize(Fx, 0), Math.Abs(Fx).ToString() + " " + funit, true, unitsize);
 
-            if (forces["Fz"][loadcase] > 0)
-                DrawForce(point, "Fz", GetArrowSize(forces["Fz"][loadcase], 0), forces["Fz"][loadcase].ToString() + " " + funit, false, unitsize);
-            else if (forces["Fz"][loadcase] < 0)
-                DrawForce(point, "Fz", GetArrowSize(forces["Fz"][loadcase], 0), Math.Abs(forces["Fz"][loadcase]).ToString() + " " + funit, true, unitsize);
 
-            if (forces["Mx"][loadcase] > 0)
-                DrawForce(point, "Mx", GetArrowSize(forces["Mx"][loadcase], 0), forces["Mx"][loadcase].ToString() + " " + funit, false, unitsize);
-            else if (forces["Mx"][loadcase] < 0)
-                DrawForce(point, "Mx", GetArrowSize(forces["Mx"][loadcase], 0), Math.Abs(forces["Mx"][loadcase]).ToString() + " " + funit, true, unitsize);
+            if (Fy > 0)
+                DrawForce(point, "Fy", GetArrowSize(Fy, 0), Fy.ToString() + " " + funit, false, unitsize);
+            else if (Fy < 0)
+                DrawForce(point, "Fy", GetArrowSize(Fy, 0), Math.Abs(Fy).ToString() + " " + funit, true, unitsize);
 
-            if (forces["My"][loadcase] > 0)
-                DrawForce(point, "My", GetArrowSize(forces["My"][loadcase], 0), forces["My"][loadcase].ToString() + " " + funit, false, unitsize);
-            else if (forces["My"][loadcase] < 0)
-                DrawForce(point, "My", GetArrowSize(forces["My"][loadcase], 0), Math.Abs(forces["My"][loadcase]).ToString() + " " + funit, true, unitsize);
 
-            if (forces["Mz"][loadcase] > 0)
-                DrawForce(point, "Mz", GetArrowSize(forces["Mz"][loadcase], 0), forces["Mz"][loadcase].ToString() + " " + funit, false, unitsize);
-            else if (forces["Mz"][loadcase] < 0)
-                DrawForce(point, "Mz", GetArrowSize(forces["Mz"][loadcase], 0), Math.Abs(forces["Mz"][loadcase]).ToString() + " " + funit, true, unitsize);
+            if (Fz > 0)
+                DrawForce(point, "Fz", GetArrowSize(Fz, 0), Fz.ToString() + " " + funit, false, unitsize);
+            else if (Fz < 0)
+                DrawForce(point, "Fz", GetArrowSize(Fz, 0), Math.Abs(Fz).ToString() + " " + funit, true, unitsize);
+
+
+            if (Mx > 0)
+                DrawForce(point, "Mx", GetArrowSize(Mx, 0), Mx.ToString() + " " + funit, false, unitsize);
+            else if (Mx < 0)
+                DrawForce(point, "Mx", GetArrowSize(Mx, 0), Math.Abs(Mx).ToString() + " " + funit, true, unitsize);
+
+
+            if (My > 0)
+                DrawForce(point, "My", GetArrowSize(My, 0), My.ToString() + " " + funit, false, unitsize);
+            else if (My < 0)
+                DrawForce(point, "My", GetArrowSize(My, 0), Math.Abs(My).ToString() + " " + funit, true, unitsize);
+
+
+            if (Mz > 0)
+                DrawForce(point, "Mz", GetArrowSize(Mz, 0), Mz.ToString() + " " + funit, false, unitsize);
+            else if (Mz < 0)
+                DrawForce(point, "Mz", GetArrowSize(Mz, 0), Math.Abs(Mz).ToString() + " " + funit, true, unitsize);
         }
 
+
+
+        /// <summary>
+        /// Interpolates the nodal forces' value, given the global maximum and minimum.
+        /// </summary>
+        /// <param name="force">The value of the nodal force.</param>
+        /// <param name="type">Whether it's a force (0) or moment (1).</param>
+        /// <returns>The arrow length.</returns>
         private double GetArrowSize(double force, int type)
         {
             var size = 0.0;
@@ -911,6 +1230,17 @@ namespace Draw
             return size;
         }
 
+
+
+        /// <summary>
+        /// Draws a given force at a given point in 3D space.
+        /// </summary>
+        /// <param name="point">The point.</param>
+        /// <param name="type">The type/direction of the force.</param>
+        /// <param name="length">The arrow length.</param>
+        /// <param name="value">The value to be placed in the text.</param>
+        /// <param name="IsNegative">Whether to invert the arrow or not.</param>
+        /// <param name="unitsize">The real length needed around the point in order to create an apparent unitary length in the viewport.</param>
         private void DrawForce(Point3D point, string type, double length, string value="", bool IsNegative=false, double unitsize=0)
         {
             var builder = new MeshBuilder();
@@ -985,18 +1315,33 @@ namespace Draw
         }
     }
 
+
+
+    /// <summary>
+    /// Contains and controls the rendering of member load symbols both in 2D and 3D.
+    /// </summary>
     public class MemberLoadsContainer
     {
+        // 3D rendering parameters
+        private HelixViewport3D viewport;
         public LinesVisual3D linesX = new LinesVisual3D() { Color = Colors.Red, Thickness = 2 };
         public LinesVisual3D linesY = new LinesVisual3D() { Color = Colors.Green, Thickness = 2 };
         public LinesVisual3D linesZ = new LinesVisual3D() { Color = Colors.Blue, Thickness = 2 };
-
-        private HelixViewport3D viewport;
         private BillboardTextGroupVisual3D textgroup = new BillboardTextGroupVisual3D();
 
-        public MemberLoadsContainer(HelixViewport3D viewport3D)
+        // 2D rendering parameters
+        private Canvas canvas;
+
+
+        /// <summary>
+        /// Member Loads Container class constructor.
+        /// </summary>
+        /// <param name="viewport3D">The viewport.</param>
+        /// <param name="cnv">The canvas.</param>
+        public MemberLoadsContainer(HelixViewport3D viewport3D, Canvas cnv)
         {
             viewport = viewport3D;
+            canvas = cnv;
 
             viewport.Children.Add(linesX);
             viewport.Children.Add(linesY);
@@ -1004,6 +1349,11 @@ namespace Draw
             viewport.Children.Add(textgroup);
         }
 
+
+
+        /// <summary>
+        /// Clears every member load from the viewport.
+        /// </summary>
         public void Clear()
         {
             if (viewport.Children.Contains(linesX))
@@ -1029,6 +1379,45 @@ namespace Draw
             viewport.Children.Add(textgroup);
         }
 
+
+
+        /// <summary>
+        /// Adds the given loads to the member defined by the given start and end points.
+        /// </summary>
+        /// <param name="start">The member's start point.</param>
+        /// <param name="end">The member's end point.</param>
+        /// <param name="loads">Dictionary containing every load applied to the member.</param>
+        /// <param name="loadcase">Loadcase index to be considered.</param>
+        /// <param name="unitsize">The real length needed around the point in order to create an apparent unitary length in the viewport.</param>
+        public void AddLoad(Point3D start, Point3D end, Dictionary<string, List<double>> loads, int loadcase, double unitsize=0)
+        {
+            var Qx0 = loads["Qx0"][loadcase];
+            var Qy0 = loads["Qy0"][loadcase];
+            var Qz0 = loads["Qz0"][loadcase];
+            var Qx1 = loads["Qx1"][loadcase];
+            var Qy1 = loads["Qy1"][loadcase];
+            var Qz1 = loads["Qz1"][loadcase];
+
+
+            if (Qx0 != 0 || Qx1 != 0)
+                DrawLoad(start, end, GetArrowSize(Qx0), GetArrowSize(Qx1), "X", Qx0, Qx1, unitsize);
+
+
+            if (Qy0 != 0 || loads["Qy1"][loadcase] != 0)
+                DrawLoad(start, end, GetArrowSize(Qy0), GetArrowSize(Qy1), "Y", Qy0, Qy1, unitsize);
+
+
+            if (Qz0 != 0 || Qz1 != 0)
+                DrawLoad(start, end, GetArrowSize(Qz0), GetArrowSize(Qz1), "Z", Qz0, Qz1, unitsize);
+        }
+
+
+
+        /// <summary>
+        /// Interpolates the given load value between the global maximum and minimum in order to find the correct arrow length.
+        /// </summary>
+        /// <param name="force">The load value.</param>
+        /// <returns>The arrow length.</returns>
         private double GetArrowSize(double force)
         {
 
@@ -1046,21 +1435,18 @@ namespace Draw
         }
 
 
-        public void AddLoad(Point3D start, Point3D end, Dictionary<string, List<double>> loads, int loadcase, double unitsize=0)
-        {
-            if (loads["Qx0"][loadcase] != 0 || loads["Qx1"][loadcase] != 0)
-                DrawLoad(start, end, GetArrowSize(loads["Qx0"][loadcase]), GetArrowSize(loads["Qx1"][loadcase]),
-                         "X", loads["Qx0"][loadcase], loads["Qx1"][loadcase], unitsize);
 
-            if (loads["Qy0"][loadcase] != 0 || loads["Qy1"][loadcase] != 0)
-                DrawLoad(start, end, GetArrowSize(loads["Qy0"][loadcase]), GetArrowSize(loads["Qy1"][loadcase]),
-                         "Y", loads["Qy0"][loadcase], loads["Qy1"][loadcase], unitsize);
-
-            if (loads["Qz0"][loadcase] != 0 || loads["Qz1"][loadcase] != 0)
-                DrawLoad(start, end, GetArrowSize(loads["Qz0"][loadcase]), GetArrowSize(loads["Qz1"][loadcase]),
-                         "Z", loads["Qz0"][loadcase], loads["Qz1"][loadcase], unitsize);
-        }
-
+        /// <summary>
+        /// Draws the distributed load arrows along the member's axis.
+        /// </summary>
+        /// <param name="start">The member's start point.</param>
+        /// <param name="end">The member's end point.</param>
+        /// <param name="heightstart">The load's start height.</param>
+        /// <param name="heightend">The load's end height.</param>
+        /// <param name="direction">The load's direction.</param>
+        /// <param name="startvalue">The load's start value (to be used in labeling).</param>
+        /// <param name="endvalue">The load's end value (to be used in labeling).</param>
+        /// <param name="unitsize">The real length needed around the point in order to create an apparent unitary length in the viewport.</param>
         public void DrawLoad(Point3D start, Point3D end, double heightstart, double heightend, string direction, double startvalue=0, double endvalue= 0, double unitsize = 0)
         {
             var vdir = end - start;
@@ -1143,79 +1529,4 @@ namespace Draw
         }
     }
 
-    public class GridContainer
-    {
-        private LinesVisual3D lines = new LinesVisual3D { Thickness = 0.8 };
-        private HelixViewport3D viewport;
-        private double radius = 0;
-
-        private Point3D upperleft = new Point3D();
-        private Point3D lowerleft = new Point3D();
-        private Point3D upperright = new Point3D();
-        private Point3D lowerright = new Point3D();
-
-        public GridContainer(HelixViewport3D viewport3D)
-        {
-            viewport = viewport3D;
-            viewport.Children.Add(lines);
-            radius = 20000;
-        }
-
-        public void Clear()
-        {
-            lines.Points.Clear();
-        }
-
-        public void DrawGrid(Point3D center, Vector3D dir1, Vector3D dir2, double dist1, double dist2, Color color)
-        {
-            lines.Color = color;
-            var p1 = Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, new Point3D());
-            var p2 = new Point(viewport.ActualWidth / 2, viewport.ActualHeight / 2);
-
-            radius = Math.Max(3 * (p2 - p1).Length, 20000);
-            int n1 = (int)(radius / dist1);
-            int n2 = (int)(radius / dist2);
-
-            for(int i=0; i<n1; i++)
-            {
-                lines.Points.Add(center + (i * dist1) * dir1 + (radius) * dir2);
-                lines.Points.Add(center + (i * dist1) * dir1 - (radius) * dir2);
-
-                lines.Points.Add(center - (i * dist1) * dir1 + (radius) * dir2);
-                lines.Points.Add(center - (i * dist1) * dir1 - (radius) * dir2);
-            }
-
-            for(int j=0; j<n2; j++)
-            {
-                lines.Points.Add(center + (radius) * dir1 + (j * dist2) * dir2);
-                lines.Points.Add(center - (radius) * dir1 + (j * dist2) * dir2);
-
-                lines.Points.Add(center + (radius) * dir1 - (j * dist2) * dir2);
-                lines.Points.Add(center - (radius) * dir1 - (j * dist2) * dir2);
-            }
-
-            upperleft = center - radius * dir1 + radius * dir2;
-            lowerleft = center - radius * dir1 - radius * dir2;
-            upperright = center + radius * dir1 + radius * dir2;
-            lowerright = center + radius * dir1 - radius * dir2;
-        }
-
-        public bool NeedsRedraw(double tol)
-        {
-            var L1 = new List<Point>();
-            var center = new Point(viewport.ActualWidth / 2, viewport.ActualHeight / 2);
-
-            L1.Add(Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, upperleft));
-            L1.Add(Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, lowerleft));
-            L1.Add(Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, upperright));
-            L1.Add(Viewport3DHelper.Point3DtoPoint2D(viewport.Viewport, lowerright));
-
-            for(int i=0; i<4; i++)
-            {
-                if ((L1[i] - center).Length < tol) return true;
-            }
-            return false;
-        }
-
-    }
 }

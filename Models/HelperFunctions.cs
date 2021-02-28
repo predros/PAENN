@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media.Media3D;
 
@@ -8,8 +6,7 @@ namespace Helper
 {
     public class Functions
     {
-        
-        public static double DistancePointLine(Point3D P1, Point3D P2, Point3D P)
+
         /// <summary>
         /// Calculates the euclidean distance between a point in space and the line defined by two points.
         /// <param name="P1">The first defining point of the line.</param>
@@ -17,6 +14,8 @@ namespace Helper
         /// <param name="P">The point.</param>
         /// <returns>The distance.</returns>
         /// </summary>
+        public static double DistancePointLine(Point3D P1, Point3D P2, Point3D P)
+
         {
             Vector3D PP1 = (Vector3D)(P1 - P);
             Vector3D P1P2 = (Vector3D)(P2 - P1);
@@ -24,13 +23,15 @@ namespace Helper
             var d = (Vector3D.CrossProduct(PP1, P1P2)).Length / P1P2.Length;
             return d;
         }
-        public static double DistancePointLine(Point P1, Point P2, Point P)
+
         /// <summary>
-        /// Returns the euclidean distance d between a point P in space and the line connecting points P1 and P2.
+        /// Returns the euclidean distance d between a point P in the Cartesian plane and the line connecting points P1 and P2.
         /// <param name="P1">The first defining point of the line.</param>
         /// <param name="P2">The second defining point of the line.</param>
         /// <param name="P">The point.</param>
         /// </summary>
+        public static double DistancePointLine(Point P1, Point P2, Point P)
+
         {
             var p1 = new Point3D(P1.X, P1.Y, 0);
             var p2 = new Point3D(P2.X, P2.Y, 0);
@@ -40,11 +41,12 @@ namespace Helper
         }
 
 
-        public static double AngleFind(Point P1, Point P2)
+
         /// <summary>
         /// Given two points P1 and P2 on the cartesian plane, find the angle between the line
         /// that intersects both and the X-axis, from 0 to 360 degrees.
         /// </summary>
+        public static double AngleFind(Point P1, Point P2)
 
         {
             var DY = P2.Y - P1.Y;
@@ -84,10 +86,12 @@ namespace Helper
                 return theta + 180;
         }
 
-        public static bool CheckPointIntersection(Point3D P1, Point3D P2, Point3D P) 
+
+
         /// <summary>
         /// Checks whether point P is contained in the line segment between P1 and P2.
         /// </summary>
+        public static bool CheckPointIntersection(Point3D P1, Point3D P2, Point3D P) 
         {
             Vector3D p1 = (Vector3D)P1;
             Vector3D p2 = (Vector3D)P2;
@@ -108,10 +112,11 @@ namespace Helper
             else return false;
         }
 
-        public static bool CheckPointIntersection(Point P1, Point P2, Point P)
         /// <summary>
         /// Checks whether point P is contained in the line segment between P1 and P2.
         /// </summary>
+        public static bool CheckPointIntersection(Point P1, Point P2, Point P)
+
         {
             var p1 = new Point3D(P1.X, P1.Y, 0);
             var p2 = new Point3D(P2.X, P2.Y, 0);
@@ -120,6 +125,16 @@ namespace Helper
             return CheckPointIntersection(p1, p2, p);
         }
 
+
+
+        /// <summary>
+        /// Tries to find the intersection between two lines, each defined by two points.
+        /// </summary>
+        /// <param name="P1">First point of the first line.</param>
+        /// <param name="P2">Second point of the first line.</param>
+        /// <param name="Q1">First point of the second line.</param>
+        /// <param name="Q2">Second point of the second line.</param>
+        /// <returns>If there is an intersection point, returns it. Otherwise, returns null.</returns>
         public static Point3D? FindLineIntersection(Point3D P1, Point3D P2, Point3D Q1, Point3D Q2)
         {
             Vector3D V1 = (Vector3D)P1;
@@ -145,12 +160,19 @@ namespace Helper
             return (Point3D)M;
         }
 
-        public static Point Rotate(Point Point, Point Center, double Angle, bool IsRadians = false)
+
+
         /// <summary>
-        /// Rotates a point/vector around a central point by a given angle, positive counter-clockwise and starting
-        /// at the X axis. Can work in both degrees and radians, as given by the IsRadians parameter, with the default
-        /// being degrees (false).
+        /// Rotates a point/vector around a central point by a given angle (in Cartesian space), positive counter-clockwise
+        /// and starting at the X axis.
         /// </summary>
+        /// <param name="Point">The point to be rotated.</param>
+        /// <param name="Center">The center of rotation</param>
+        /// <param name="Angle">The angle to rotate by.</param>
+        /// <param name="IsRadians">Whether the angle is given in radians.</param>
+        /// <returns>The rotated point.</returns>
+        public static Point Rotate(Point Point, Point Center, double Angle, bool IsRadians = false)
+
         {
             // Find the length between the two points and the angle between their connecting 
             // line segment and the X axis (effectively forming the polar-coordinates vector).
@@ -173,7 +195,16 @@ namespace Helper
             // changed from alpha to theta) plus the translation to the central point of rotation.
             return new Point(Center.X + length * cos, Center.Y + length * sin);
         }
-    
+
+
+
+        /// <summary>
+        /// Takes a given string and converts into double, whilst allowing for some restrictions.
+        /// </summary>
+        /// <param name="String">The string to be converted.</param>
+        /// <param name="CanBeNegative">Whether the converted value can be negative.</param>
+        /// <param name="CanBeZero">Whether the converted value can be zero.</param>
+        /// <returns>If conversion is possible and all restrictions are met, returns the converted value. Otherwise, returns null.</returns>
         public static double? GetDouble(string String, bool CanBeNegative=true, bool CanBeZero=true)
         {
             var strim = String.Trim();
@@ -189,20 +220,30 @@ namespace Helper
             return result;
         }
 
-        public static Point Point3DToCanvas(Point3D point, string normaldir)
+
+
+        /// <summary>
+        /// Converts a given point in 3D space to 2D canvas coordinates, in accordance to the
+        /// current shown plane in the canvas.
+        /// </summary>
+        /// <param name="point">The 3D point.</param>
+        /// <param name="normaldir">The vector normal to the plane being represented in the canvas.</param>
+        /// <param name="origin">The origin coordinates, relative to the canvas' upper-left corner.</param>
+        /// <returns>The converted point.</returns>
+        public static Point Point3DToCanvas(Point3D point, string normaldir, Point origin)
         {
             var p = new Point();
 
             switch (normaldir)
             {
                 case "X":
-                    p = new Point(point.Y, point.Z);
+                    p = new Point(point.Y + origin.X, -point.Z + origin.Y);
                     break;
                 case "Y":
-                    p = new Point(point.X, point.Z);
+                    p = new Point(point.X + origin.X, -point.Z + origin.Y);
                     break;
                 case "Z":
-                    p = new Point(point.X, point.Y);
+                    p = new Point(point.X + origin.X, -point.Y + origin.Y);
                     break;
             }
             return p;

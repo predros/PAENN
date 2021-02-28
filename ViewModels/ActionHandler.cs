@@ -7,14 +7,24 @@ using Helper;
 
 namespace PAENN.ViewModels
 {
+    /// <summary>
+    /// Handles action history, used for undoing/redoing.
+    /// </summary>
     public static class ActionHandler
     {
+        // List of past states
         private static List<ObservableCollection<Node>> State_Nodes = new List<ObservableCollection<Node>>();
         private static List<ObservableCollection<Member>> State_Members = new List<ObservableCollection<Member>>();
 
+        // List of redoable states
         private static List<ObservableCollection<Node>> Redo_Nodes = new List<ObservableCollection<Node>>();
         private static List<ObservableCollection<Member>> Redo_Members = new List<ObservableCollection<Member>>();
 
+
+
+        /// <summary>
+        /// Saves the current state of the structure.
+        /// </summary>
         public static void SaveState()
         {
             State_Nodes.Add(VarHolder.NodesList);
@@ -24,6 +34,11 @@ namespace PAENN.ViewModels
             Redo_Nodes.Clear();
         }
 
+
+
+        /// <summary>
+        /// Undoes the current state of the structure.
+        /// </summary>
         public static void Undo()
         {
             var n = State_Nodes.Count - 1;
@@ -52,6 +67,11 @@ namespace PAENN.ViewModels
             }
         }
 
+
+
+        /// <summary>
+        /// Redoes the last undone state of the structure.
+        /// </summary>
         public static void Redo()
         {
             var n = Redo_Nodes.Count - 1;
@@ -68,6 +88,16 @@ namespace PAENN.ViewModels
             Redo_Members.RemoveAt(n);
         }
 
+
+
+        /// <summary>
+        /// Adds a new node to the structure.
+        /// </summary>
+        /// <param name="X">The node's X-coordinate.</param>
+        /// <param name="Y">The node's Y-coordinate.</param>
+        /// <param name="Z">The node's Z-coordinate.</param>
+        /// <param name="save">Whether to save the current state before adding.</param>
+        /// <returns></returns>
         public static int NewNode(double X, double Y, double Z, int save=0)
         {
             var tol = 1e-5;
@@ -106,6 +136,21 @@ namespace PAENN.ViewModels
             return 0;
         }
 
+
+
+        /// <summary>
+        /// Adds a new member to the structure.
+        /// </summary>
+        /// <param name="X1">The first node's X-coordinate.</param>
+        /// <param name="Y1">The first node's Y-coordinate.</param>
+        /// <param name="Z1">The first node's Z-coordinate.</param>
+        /// <param name="X2">The second node's X-coordinate.</param>
+        /// <param name="Y2">The second node's Y-coordinate.</param>
+        /// <param name="Z2">The second node's Z-coordinate.</param>
+        /// <param name="material">The member's material.</param>
+        /// <param name="section">The member's cross-section.</param>
+        /// <param name="save">Whether to save the current state before adding.</param>
+        /// <returns></returns>
         public static int NewMember(double X1, double Y1, double Z1, double X2, double Y2, double Z2, Material material, Section section, int save=0)
         {
             var tol = 1e-5;
@@ -166,6 +211,15 @@ namespace PAENN.ViewModels
             return 0;
         }
 
+
+
+        /// <summary>
+        /// Applies support conditions to a given node.
+        /// </summary>
+        /// <param name="node">The node to be applied.</param>
+        /// <param name="support">The support conditions to be applied.</param>
+        /// <param name="spring">The spring constants to be applied.</param>
+        /// <param name="pdispl">The prescribed displacements to be applied.</param>
         public static void ApplySupport(Node node, Dictionary<string, bool> support, Dictionary<string, double> spring, Dictionary<string, double> pdispl)
         {
             SaveState();
@@ -175,6 +229,14 @@ namespace PAENN.ViewModels
             node.PrescribedDispl = new Dictionary<string, double>(pdispl);
         }
 
+
+
+        /// <summary>
+        /// Applies nodal forces to a given node.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="forces">The nodal forces.</param>
+        /// <param name="loadcase">The loadcase being used.</param>
         public static void ApplyNodalForces(Node node, Dictionary<string, double> forces, int loadcase)
         {
             SaveState();
@@ -188,6 +250,14 @@ namespace PAENN.ViewModels
             node.NodalForces["Mz"][loadcase] = forces["Mz"];
         }
 
+
+
+        /// <summary>
+        /// Applies distributed loads to a given member.
+        /// </summary>
+        /// <param name="member">The member.</param>
+        /// <param name="loads">The loads.</param>
+        /// <param name="loadcase">The loadcase being applied to.</param>
         public static void ApplyMemberLoads(Member member, Dictionary<string, double> loads, int loadcase)
         {
             SaveState();

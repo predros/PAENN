@@ -5,11 +5,16 @@ using PAENN.ViewModels;
 namespace PAENN.Views
 {
     /// <summary>
-    /// Lógica interna para WinSections.xaml
+    /// "Manage sections" window internal logic.
     /// </summary>
     public partial class WinSections : Window
     {
         public WinSections_VM VM = new WinSections_VM();
+
+
+        /// <summary>
+        /// WinSections class constructor.
+        /// </summary>
         public WinSections()
         {
             InitializeComponent();
@@ -17,6 +22,13 @@ namespace PAENN.Views
             List_Sections.ItemsSource = VarHolder.SectionsList;
         }
 
+
+
+        /// <summary>
+        /// Handles the sections list selection changes.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void List_Sections_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var item = List_Sections.SelectedItem;
@@ -27,6 +39,11 @@ namespace PAENN.Views
             VM.SelectionChanged(n);
         }
 
+        /// <summary>
+        /// Handles the Delete button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Delete_Click(object sender, RoutedEventArgs e)
         {
             var item = List_Sections.SelectedItem;
@@ -46,6 +63,11 @@ namespace PAENN.Views
 
         }
 
+        /// <summary>
+        /// Handles the Rename button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Rename_Click(object sender, RoutedEventArgs e)
         {
             var item = List_Sections.SelectedItem;
@@ -63,7 +85,11 @@ namespace PAENN.Views
             }
         }
 
-
+        /// <summary>
+        /// Handles the Radiobutton check/uncheck event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void RB_Checked(object sender, RoutedEventArgs e)
         {
             string sectype;
@@ -80,6 +106,11 @@ namespace PAENN.Views
                 VM.TypeChanged(sectype);
         }
 
+        /// <summary>
+        /// Handles the Add/Edit button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
             string name = VM.Entry_Name;
@@ -127,11 +158,21 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Clear button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Clear_Click(object sender, RoutedEventArgs e)
         {
             VM.ClearText();
         }
 
+        /// <summary>
+        /// Handles the Closing event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             VarHolder.ClickType = "Select";

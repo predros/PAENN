@@ -111,8 +111,8 @@
 
         <helix:HelixViewport3D x:Name="viewport" Background="WhiteSmoke" Cursor="Cross" PanCursor="SizeAll" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0"
                                IsZoomEnabled="True" IsMoveEnabled="True" IsPanEnabled="True" IsRotationEnabled="True" VerticalAlignment="Stretch" 
-                               ShowCoordinateSystem="True" ShowViewCube="True" ZoomAroundMouseDownPoint="True" Width="Auto" Height="Auto" MouseWheel="viewport_MouseWheel"
-                               RotateAroundMouseDownPoint="True" MouseLeftButtonDown="viewport_MouseLeftButtonDown" MouseMove="viewport_MouseMove" CalculateCursorPosition="True">
+                               ShowCoordinateSystem="True" ShowViewCube="True" ZoomAroundMouseDownPoint="True" Width="Auto" Height="Auto" CalculateCursorPosition="True"
+                               RotateAroundMouseDownPoint="True" MouseLeftButtonDown="viewport_MouseLeftButtonDown" MouseMove="viewport_MouseMove">
 
             <helix:HelixViewport3D.Camera>
                 <PerspectiveCamera Position="120, 200, 140" LookDirection="-0.1, -0.9, -0.7" UpDirection="0, 0, 1" FieldOfView="60" NearPlaneDistance="0.001" FarPlaneDistance="10000"/>

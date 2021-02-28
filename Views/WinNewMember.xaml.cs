@@ -1,21 +1,36 @@
 ﻿using System.Windows;
+using PAENN.ViewModels;
 
 
 namespace PAENN.Views
 {
     /// <summary>
-    /// Lógica interna para WinNewMember.xaml
+    /// "Add new member" window internal logic
     /// </summary>
     public partial class WinNewMember : Window
     {
-        public ViewModels.WinNewMember_VM VM = new ViewModels.WinNewMember_VM();
+
+        public WinNewMember_VM VM = new WinNewMember_VM();
+
+
+        /// <summary>
+        /// WinNewMember class constructor.
+        /// </summary>
         public WinNewMember()
         {
-            DataContext = VM;
-            ViewModels.VarHolder.ClickType = "NewMember_Start";
             InitializeComponent();
+
+            DataContext = VM;
+            VarHolder.ClickType = "NewMember_Start";
         }
 
+
+
+        /// <summary>
+        /// Handles the Apply button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Apply_Click(object sender, RoutedEventArgs e)
         {
             int apply = VM.Apply();
@@ -47,11 +62,21 @@ namespace PAENN.Views
 
         }
 
+        /// <summary>
+        /// Handles the Closing event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModels.VarHolder.ClickType = "Select";
+            VarHolder.ClickType = "Select";
         }
 
+        /// <summary>
+        /// Handles the Close button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();

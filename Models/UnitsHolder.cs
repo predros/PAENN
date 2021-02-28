@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace PAENN.Models
 {
-    public static class UnitsHolder
     /// <summary>
     /// Class designed to hold the current measuring units, as well as the converting functions
     /// </summary>
+    public static class UnitsHolder
     {
         public static string Length = "cm";
         public static string Force = "kN";

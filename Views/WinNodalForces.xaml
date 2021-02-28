@@ -43,7 +43,7 @@
             </GroupBox>
             <StackPanel Orientation="Horizontal" Margin="2.5">
                 <Button Name="Button_Close" Content="Fechar" Width="125" HorizontalAlignment="Stretch" Margin="2.5" Click="Button_Close_Click"/>
-                <Button Content="Aplicar" Width="125" HorizontalAlignment="Stretch" Margin="2.5" Click="Button_Click" />
+                <Button Content="Aplicar" Width="125" HorizontalAlignment="Stretch" Margin="2.5" Click="Button_Apply_Click" />
             </StackPanel>
         </StackPanel>
         

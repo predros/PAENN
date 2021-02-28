@@ -4,52 +4,69 @@ using System.Collections.ObjectModel;
 
 namespace PAENN.ViewModels
 {
+    /// <summary>
+    /// Static class using for holding global variables needed in multiple classes.
+    /// </summary>
     public static class VarHolder
     {
         #region Item collections
-        public static ObservableCollection<string> LoadcasesList = new ObservableCollection<string>();
-        public static ObservableCollection<string> CombinationsList = new ObservableCollection<string>();
+        public static ObservableCollection<string> LoadcasesList = new ObservableCollection<string>();      // List of loadcase names
+        public static ObservableCollection<string> CombinationsList = new ObservableCollection<string>();   // List of combination names
         
-        public static ObservableCollection<Node> NodesList = new ObservableCollection<Node>();
-        public static ObservableCollection<Member> MembersList = new ObservableCollection<Member>();
-        public static ObservableCollection<Material> MaterialsList = new ObservableCollection<Material>();
-        public static ObservableCollection<Section> SectionsList = new ObservableCollection<Section>();
+        public static ObservableCollection<Node> NodesList = new ObservableCollection<Node>();              // List of nodes
+        public static ObservableCollection<Member> MembersList = new ObservableCollection<Member>();        // List of members
+        public static ObservableCollection<Material> MaterialsList = new ObservableCollection<Material>();  // List of materials
+        public static ObservableCollection<Section> SectionsList = new ObservableCollection<Section>();     // List of sections
         #endregion
 
         #region Appliable properties
-        public static Dictionary<string, bool> ApplyRestr = new Dictionary<string, bool>();
-        public static Dictionary<string, double> ApplySpring = new Dictionary<string, double>();
-        public static Dictionary<string, double> ApplyPdispl = new Dictionary<string, double>();
-        public static Dictionary<string, double> ApplyNodal = new Dictionary<string, double>();
-        public static Dictionary<string, double> ApplyLoad = new Dictionary<string, double>();
+        public static Dictionary<string, bool> ApplyRestr = new Dictionary<string, bool>();         // Stored DOF restriction values to be applied
+        public static Dictionary<string, double> ApplySpring = new Dictionary<string, double>();    // Stored spring constants to be applied
+        public static Dictionary<string, double> ApplyPdispl = new Dictionary<string, double>();    // Stored prescribed displacements to be applied
+        public static Dictionary<string, double> ApplyNodal = new Dictionary<string, double>();     // Stored nodal forces to be applied
+        public static Dictionary<string, double> ApplyLoad = new Dictionary<string, double>();      // Stored member loads to be applied
         #endregion
 
         #region Max/min applied forces
+        // Global maximum/minimum nodal forces in current loadcase
         public static double MaxForce = 2;
         public static double MinForce = 1;
 
+        // Global maximum/minimum nodal moments in current loadcase
         public static double MaxMom = 2;
         public static double MinMom = 1;
 
+        // Global maximum/minimum distributed loads in current loadcase
         public static double MaxLoad = 2;
         public static double MinLoad = 1;
         #endregion
 
         #region Current properties
+        // Current loadcase/combination indices
         public static int CurrentLoadcase = 0;
         public static int CurrentCombination = -1;
 
+        // Action to be taken when clicking the viewport/canvas
         public static string ClickType = "Select";
 
+        // Variable used to store the first node selected when creating members via clicking
         public static Node StartNode;
-
-        public static string GridNormal = "None";
-
         #endregion
 
+        #region Grid properties
+        // Normal direction to the current canvas plane (None if using the viewport)
+        public static string GridNormal = "None";
+
+        // Horizontal and vertical grid spacing
         public static double GridH { get; set; } = 100;
         public static double GridV { get; set; } = 100;
+        #endregion
 
+
+
+        /// <summary>
+        /// Finds the global maxima/minima for nodal forces/moments and stores them.
+        /// </summary>
         public static void MaxMinForces()
         {
             if (NodesList.Count == 0)
@@ -83,6 +100,11 @@ namespace PAENN.ViewModels
                 MinMom = MaxMom - 25;
         }
 
+
+
+        /// <summary>
+        /// Finds the global maximum/minimum for member loads and stores them.
+        /// </summary>
         public static void MaxMinLoads()
         {
             if (MembersList.Count == 0)

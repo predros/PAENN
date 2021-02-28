@@ -1,22 +1,34 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-
+using PAENN.ViewModels;
 
 namespace PAENN.Views
 {
     /// <summary>
-    /// Lógica interna para WinNewNode.xaml
+    /// "Add new node" window internal logic.
     /// </summary>
     public partial class WinNewNode : Window
     {
-        private ViewModels.WinNewNode_VM VM = new ViewModels.WinNewNode_VM();
+        private WinNewNode_VM VM = new WinNewNode_VM();
+
+
+        /// <summary>
+        /// WinNewNode class constructor.
+        /// </summary>
         public WinNewNode()
         {
             InitializeComponent();
-            ViewModels.VarHolder.ClickType = "NewNode";
-            this.DataContext = VM;
+            VarHolder.ClickType = "NewNode";
+            DataContext = VM;
         }
 
+
+
+        /// <summary>
+        /// Handles the Apply button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Apply_Click(object sender, RoutedEventArgs e)
         {
             int apply = VM.Apply();
@@ -30,7 +42,7 @@ namespace PAENN.Views
                     break;
                 default:
                     var mainwindow = (MainWindow)Application.Current.Windows[0];
-                    if (ViewModels.VarHolder.GridNormal == "None")
+                    if (VarHolder.GridNormal == "None")
                         mainwindow.View_Redraw();
                     else
                         mainwindow.Canvas_Redraw();
@@ -38,14 +50,24 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Close button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        public void OnWindowClosing(object sender, CancelEventArgs e)
+        /// <summary>
+        /// Handles the Closing event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
+        public void Window_Closing(object sender, CancelEventArgs e)
         {
-            ViewModels.VarHolder.ClickType = "Select";
+            VarHolder.ClickType = "Select";
         }
     }
 }

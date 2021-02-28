@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PAENN.ViewModels
 {
+    /// <summary>
+    /// ViewModel class used for WinNodalForces class instances.
+    /// </summary>
     public class WinNodalForces_VM : ObservableClass
     {
-        private string text_force;
-        public string Text_Force { get => text_force; set => PropertySet(ref text_force, "Text_Force", value); }
+        #region Entry form labels
+        public string Text_Force { get; set; } = "Força (" + Models.UnitsHolder.Force + ")";
+        public string Text_Moment { get; set; } = "Momento (" + Models.UnitsHolder.Moment + ")";
+        #endregion
 
-        private string text_moment;
-        public string Text_Moment { get => text_moment; set => PropertySet(ref text_moment, "Text_Moment", value); }
 
-
+        #region Textbox-bound properties
         private string entry_fx = "";
         public string Entry_Fx { get => entry_fx; set => PropertySet(ref entry_fx, "Entry_Fx", value); }
 
@@ -32,32 +32,34 @@ namespace PAENN.ViewModels
 
         private string entry_mz = "";
         public string Entry_Mz { get => entry_mz; set => PropertySet(ref entry_mz, "Entry_Mz", value); }
+        #endregion
 
 
-        public WinNodalForces_VM()
-        {
-            Text_Force = "Força (" + Models.UnitsHolder.Force + ")";
-            Text_Moment = "Momento (" + Models.UnitsHolder.Moment + ")";
-        }
 
+        /// <summary>
+        /// Converts the current values in the texboxes into a dictionary and stores in the VarHolder.
+        /// </summary>
+        /// <returns>Error code if fails, 0 if successful.</returns>
         public int Apply()
         {
-            var fx = Helper.Functions.GetDouble(Entry_Fx);
-            var fy = Helper.Functions.GetDouble(Entry_Fy);
-            var fz = Helper.Functions.GetDouble(Entry_Fz);
+            try
+            {
+                // Converts each string into double.
+                var fx = Convert.ToDouble(Entry_Fx);
+                var fy = Convert.ToDouble(Entry_Fy);
+                var fz = Convert.ToDouble(Entry_Fz);
 
-            var mx = Helper.Functions.GetDouble(Entry_Mx);
-            var my = Helper.Functions.GetDouble(Entry_My);
-            var mz = Helper.Functions.GetDouble(Entry_Mz);
+                var mx = Convert.ToDouble(Entry_Mx);
+                var my = Convert.ToDouble(Entry_My);
+                var mz = Convert.ToDouble(Entry_Mz);
 
-            if (!fx.HasValue || !fy.HasValue || !fz.HasValue || !mx.HasValue || !my.HasValue || !mz.HasValue)
-                return -1;
-
-            VarHolder.ApplyNodal = new Dictionary<string, double> { { "Fx", fx.GetValueOrDefault() }, { "Fy", fy.GetValueOrDefault() },
-                                                                    { "Fz", fz.GetValueOrDefault() }, { "Mx", mx.GetValueOrDefault() },
-                                                                    { "My", my.GetValueOrDefault() }, { "Mz", mz.GetValueOrDefault() } };
-
-            return 0;
+                // Stores the values in the VarHolder and returns 0.
+                VarHolder.ApplyNodal = new Dictionary<string, double> { { "Fx", fx }, { "Fy", fy }, { "Fz", fz },
+                                                                        { "Mx", mx }, { "My", my }, { "Mz", mz } };
+                return 0;
+            }
+            // If unable to convert the strings to double, returns an error.
+            catch (FormatException) { return -1; }
         }
     }
 }

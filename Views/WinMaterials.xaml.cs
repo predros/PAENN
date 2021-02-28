@@ -1,22 +1,35 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using PAENN.ViewModels;
 
 namespace PAENN.Views
 {
     /// <summary>
-    /// Lógica interna para WinMaterials.xaml
+    /// "Manage materials" window internal logic.
     /// </summary>
     public partial class WinMaterials : Window
     {
-        private ViewModels.WinMaterials_VM VM = new ViewModels.WinMaterials_VM();
+        private WinMaterials_VM VM = new WinMaterials_VM();
+
+
+        /// <summary>
+        /// WinMaterials class constructor.
+        /// </summary>
         public WinMaterials()
         {
             InitializeComponent();
             
-            this.DataContext = VM;
+            DataContext = VM;
             List_Materials.ItemsSource = ViewModels.VarHolder.MaterialsList;
         }
 
+
+
+        /// <summary>
+        /// Handles the change in the materials list selection.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void List_Materials_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var item = List_Materials.SelectedItem;
@@ -27,6 +40,11 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Delete button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Delete_Click(object sender, RoutedEventArgs e)
         {
             var item = List_Materials.SelectedItem;
@@ -45,6 +63,11 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Rename button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Rename_Click(object sender, RoutedEventArgs e)
         {
             var item = List_Materials.SelectedItem;
@@ -65,6 +88,11 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Add/Edit button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
             var warning = new MessageBoxResult();
@@ -103,13 +131,24 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Clear button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_Clear_Click(object sender, RoutedEventArgs e)
         {
-            TextBox_Name.Text = "";
-            TextBox_Elasticity.Text = "";
-            TextBox_Thermal.Text = "";
+            VM.Entry_Name = "";
+            VM.Entry_Elasticity = "";
+            VM.Entry_Transversal = "";
+            VM.Entry_Thermal = "";
         }
 
+        /// <summary>
+        /// Handles the Apply to All button click.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Button_ApplyAll_Click(object sender, RoutedEventArgs e)
         {
             var item = List_Materials.SelectedItem;
@@ -123,9 +162,14 @@ namespace PAENN.Views
             }
         }
 
+        /// <summary>
+        /// Handles the Closing event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModels.VarHolder.ClickType = "Select";
+            VarHolder.ClickType = "Select";
         }
     }
 }
